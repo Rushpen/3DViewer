@@ -14,10 +14,10 @@ EQ            = =
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DGIFIMAGE_NO_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_3DEXTRAS_LIB -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DLOGIC_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
+DEFINES       = -DGIFIMAGE_NO_LIB -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -O2 -std=gnu++1z -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -IRecord/QtGifImageLib/src/gifimage -IRecord/QtGifImageLib/src/3rdParty/giflib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/Qt3DExtras -I/usr/include/x86_64-linux-gnu/qt5/Qt3DRender -I/usr/include/x86_64-linux-gnu/qt5/Qt3DInput -I/usr/include/x86_64-linux-gnu/qt5/Qt3DLogic -I/usr/include/x86_64-linux-gnu/qt5/Qt3DCore -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
+INCPATH       = -I. -IRecord/QtGifImageLib/src/gifimage -IRecord/QtGifImageLib/src/3rdParty/giflib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
 QMAKE         = /usr/lib/qt5/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -37,10 +37,10 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = 3DViewer1.0.0
-DISTDIR = /home/quinccel/Рабочий\ стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/.tmp/3DViewer1.0.0
+DISTDIR = /mnt/c/Users/G_Rus/source/3DViewer/View/.tmp/3DViewer1.0.0
 LINK          = g++
-LFLAGS        = -Wl,-O1 -Wl,-rpath-link,/usr/lib/x86_64-linux-gnu
-LIBS          = $(SUBLIBS) -lGLU /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt53DExtras.so /usr/lib/x86_64-linux-gnu/libQt53DRender.so /usr/lib/x86_64-linux-gnu/libQt53DInput.so /usr/lib/x86_64-linux-gnu/libQt53DLogic.so /usr/lib/x86_64-linux-gnu/libQt53DCore.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Network.so /usr/lib/x86_64-linux-gnu/libQt5Core.so -lGL -lpthread   
+LFLAGS        = -Wl,-O1
+LIBS          = $(SUBLIBS) -lGLU /usr/lib/x86_64-linux-gnu/libQt5OpenGL.so /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Core.so -lGL -lpthread   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -71,7 +71,8 @@ SOURCES       = main.cpp \
 		Record/QtGifImageLib/src/3rdParty/giflib/gif_hash.c \
 		Record/QtGifImageLib/src/3rdParty/giflib/gifalloc.c \
 		Record/QtGifImageLib/src/3rdParty/giflib/quantize.c \
-		Record/QtGifImageLib/src/gifimage/qgifimage.cpp moc_MainWindow.cpp \
+		Record/QtGifImageLib/src/gifimage/qgifimage.cpp qrc_resources.cpp \
+		moc_MainWindow.cpp \
 		moc_UIControl.cpp \
 		moc_OpenGLWidget.cpp \
 		moc_UIMenubar.cpp \
@@ -97,6 +98,7 @@ OBJECTS       = main.o \
 		gifalloc.o \
 		quantize.o \
 		qgifimage.o \
+		qrc_resources.o \
 		moc_MainWindow.o \
 		moc_UIControl.o \
 		moc_OpenGLWidget.o \
@@ -112,30 +114,6 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/g++-base.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/g++-unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/qconfig.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3danimation.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3danimation_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dcore.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dcore_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dextras.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dextras_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dinput.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dinput_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dlogic.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dlogic_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquick.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquick_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickanimation.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickanimation_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickextras.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickextras_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickinput.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickinput_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickrender.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickrender_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickscene2d.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickscene2d_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3drender.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3drender_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_accessibility_support_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_concurrent.pri \
@@ -184,7 +162,6 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
-		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -260,30 +237,6 @@ Makefile: 3DViewer.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.con
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/g++-base.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/g++-unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/qconfig.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3danimation.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3danimation_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dcore.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dcore_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dextras.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dextras_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dinput.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dinput_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dlogic.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dlogic_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquick.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquick_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickanimation.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickanimation_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickextras.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickextras_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickinput.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickinput_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickrender.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickrender_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickscene2d.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickscene2d_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3drender.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3drender_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_accessibility_support_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_concurrent.pri \
@@ -332,7 +285,6 @@ Makefile: 3DViewer.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.con
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
-		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -354,7 +306,8 @@ Makefile: 3DViewer.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.con
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		3DViewer.pro
+		3DViewer.pro \
+		resources.qrc
 	$(QMAKE) -o Makefile 3DViewer.pro
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf:
@@ -365,30 +318,6 @@ Makefile: 3DViewer.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.con
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/g++-base.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/g++-unix.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/qconfig.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3danimation.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3danimation_private.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dcore.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dcore_private.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dextras.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dextras_private.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dinput.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dinput_private.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dlogic.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dlogic_private.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquick.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquick_private.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickanimation.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickanimation_private.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickextras.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickextras_private.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickinput.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickinput_private.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickrender.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickrender_private.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickscene2d.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3dquickscene2d_private.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3drender.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_3drender_private.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_accessibility_support_private.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_concurrent.pri:
@@ -437,7 +366,6 @@ Makefile: 3DViewer.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.con
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf:
-.qmake.stash:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf:
@@ -460,6 +388,7 @@ Record/QtGifImageLib/src/gifimage/qtgifimage.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf:
 3DViewer.pro:
+resources.qrc:
 qmake: FORCE
 	@$(QMAKE) -o Makefile 3DViewer.pro
 
@@ -474,6 +403,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
+	$(COPY_FILE) --parents resources.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents MainWindow.h Control/UIControl.h Scene/UIScene.h Scene/openGL/OpenGLWidget.h Menu/UIMenubar.h Menu/UIMyDialog.h Record/Screen.h ../3DViewer_back/back/affine.h ../3DViewer_back/back/parser.h ../3DViewer_back/mc/controller.h ../3DViewer_back/mc/model.h ../matrix/s21_matrix_oop.h Record/QtGifImageLib/src/gifimage/qgifglobal.h Record/QtGifImageLib/src/gifimage/qgifimage.h Record/QtGifImageLib/src/gifimage/qgifimage_p.h $(DISTDIR)/
 	$(COPY_FILE) --parents main.cpp MainWindow.cpp Control/UIControl.cpp Scene/UIScene.cpp Scene/openGL/OpenGLWidget.cpp Menu/UIMenubar.cpp Menu/UIMyDialog.cpp Record/Screen.cpp ../3DViewer_back/back/affine.cpp ../3DViewer_back/back/parser.cpp ../3DViewer_back/mc/controller.cpp ../3DViewer_back/mc/model.cpp ../matrix/s21_matrix_oop.cpp Record/QtGifImageLib/src/3rdParty/giflib/dgif_lib.c Record/QtGifImageLib/src/3rdParty/giflib/egif_lib.c Record/QtGifImageLib/src/3rdParty/giflib/gif_err.c Record/QtGifImageLib/src/3rdParty/giflib/gif_hash.c Record/QtGifImageLib/src/3rdParty/giflib/gifalloc.c Record/QtGifImageLib/src/3rdParty/giflib/quantize.c Record/QtGifImageLib/src/gifimage/qgifimage.cpp $(DISTDIR)/
@@ -500,8 +430,15 @@ check: first
 
 benchmark: first
 
-compiler_rcc_make_all:
+compiler_rcc_make_all: qrc_resources.cpp
 compiler_rcc_clean:
+	-$(DEL_FILE) qrc_resources.cpp
+qrc_resources.cpp: resources.qrc \
+		/usr/lib/qt5/bin/rcc \
+		fragment.glsl \
+		vertex.glsl
+	/usr/lib/qt5/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
+
 compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
@@ -527,12 +464,12 @@ moc_MainWindow.cpp: MainWindow.h \
 		Scene/openGL/OpenGLWidget.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include '/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View' -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/Record/QtGifImageLib/src/gifimage' -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/Record/QtGifImageLib/src/3rdParty/giflib' -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/Qt3DExtras -I/usr/include/x86_64-linux-gnu/qt5/Qt3DRender -I/usr/include/x86_64-linux-gnu/qt5/Qt3DInput -I/usr/include/x86_64-linux-gnu/qt5/Qt3DLogic -I/usr/include/x86_64-linux-gnu/qt5/Qt3DCore -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include MainWindow.h -o moc_MainWindow.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /mnt/c/Users/G_Rus/source/3DViewer/View/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/mnt/c/Users/G_Rus/source/3DViewer/View -I/mnt/c/Users/G_Rus/source/3DViewer/View/Record/QtGifImageLib/src/gifimage -I/mnt/c/Users/G_Rus/source/3DViewer/View/Record/QtGifImageLib/src/3rdParty/giflib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include MainWindow.h -o moc_MainWindow.cpp
 
 moc_UIControl.cpp: Control/UIControl.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include '/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View' -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/Record/QtGifImageLib/src/gifimage' -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/Record/QtGifImageLib/src/3rdParty/giflib' -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/Qt3DExtras -I/usr/include/x86_64-linux-gnu/qt5/Qt3DRender -I/usr/include/x86_64-linux-gnu/qt5/Qt3DInput -I/usr/include/x86_64-linux-gnu/qt5/Qt3DLogic -I/usr/include/x86_64-linux-gnu/qt5/Qt3DCore -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include Control/UIControl.h -o moc_UIControl.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /mnt/c/Users/G_Rus/source/3DViewer/View/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/mnt/c/Users/G_Rus/source/3DViewer/View -I/mnt/c/Users/G_Rus/source/3DViewer/View/Record/QtGifImageLib/src/gifimage -I/mnt/c/Users/G_Rus/source/3DViewer/View/Record/QtGifImageLib/src/3rdParty/giflib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include Control/UIControl.h -o moc_UIControl.cpp
 
 moc_OpenGLWidget.cpp: Scene/openGL/OpenGLWidget.h \
 		../3DViewer_back/mc/controller.h \
@@ -542,7 +479,7 @@ moc_OpenGLWidget.cpp: Scene/openGL/OpenGLWidget.h \
 		../3DViewer_back/back/parser.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include '/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View' -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/Record/QtGifImageLib/src/gifimage' -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/Record/QtGifImageLib/src/3rdParty/giflib' -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/Qt3DExtras -I/usr/include/x86_64-linux-gnu/qt5/Qt3DRender -I/usr/include/x86_64-linux-gnu/qt5/Qt3DInput -I/usr/include/x86_64-linux-gnu/qt5/Qt3DLogic -I/usr/include/x86_64-linux-gnu/qt5/Qt3DCore -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include Scene/openGL/OpenGLWidget.h -o moc_OpenGLWidget.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /mnt/c/Users/G_Rus/source/3DViewer/View/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/mnt/c/Users/G_Rus/source/3DViewer/View -I/mnt/c/Users/G_Rus/source/3DViewer/View/Record/QtGifImageLib/src/gifimage -I/mnt/c/Users/G_Rus/source/3DViewer/View/Record/QtGifImageLib/src/3rdParty/giflib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include Scene/openGL/OpenGLWidget.h -o moc_OpenGLWidget.cpp
 
 moc_UIMenubar.cpp: Menu/UIMenubar.h \
 		../3DViewer_back/mc/controller.h \
@@ -556,19 +493,19 @@ moc_UIMenubar.cpp: Menu/UIMenubar.h \
 		Menu/UIMyDialog.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include '/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View' -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/Record/QtGifImageLib/src/gifimage' -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/Record/QtGifImageLib/src/3rdParty/giflib' -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/Qt3DExtras -I/usr/include/x86_64-linux-gnu/qt5/Qt3DRender -I/usr/include/x86_64-linux-gnu/qt5/Qt3DInput -I/usr/include/x86_64-linux-gnu/qt5/Qt3DLogic -I/usr/include/x86_64-linux-gnu/qt5/Qt3DCore -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include Menu/UIMenubar.h -o moc_UIMenubar.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /mnt/c/Users/G_Rus/source/3DViewer/View/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/mnt/c/Users/G_Rus/source/3DViewer/View -I/mnt/c/Users/G_Rus/source/3DViewer/View/Record/QtGifImageLib/src/gifimage -I/mnt/c/Users/G_Rus/source/3DViewer/View/Record/QtGifImageLib/src/3rdParty/giflib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include Menu/UIMenubar.h -o moc_UIMenubar.cpp
 
 moc_UIMyDialog.cpp: Menu/UIMyDialog.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include '/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View' -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/Record/QtGifImageLib/src/gifimage' -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/Record/QtGifImageLib/src/3rdParty/giflib' -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/Qt3DExtras -I/usr/include/x86_64-linux-gnu/qt5/Qt3DRender -I/usr/include/x86_64-linux-gnu/qt5/Qt3DInput -I/usr/include/x86_64-linux-gnu/qt5/Qt3DLogic -I/usr/include/x86_64-linux-gnu/qt5/Qt3DCore -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include Menu/UIMyDialog.h -o moc_UIMyDialog.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /mnt/c/Users/G_Rus/source/3DViewer/View/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/mnt/c/Users/G_Rus/source/3DViewer/View -I/mnt/c/Users/G_Rus/source/3DViewer/View/Record/QtGifImageLib/src/gifimage -I/mnt/c/Users/G_Rus/source/3DViewer/View/Record/QtGifImageLib/src/3rdParty/giflib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include Menu/UIMyDialog.h -o moc_UIMyDialog.cpp
 
 moc_Screen.cpp: Record/Screen.h \
 		Record/QtGifImageLib/src/gifimage/qgifimage.h \
 		Record/QtGifImageLib/src/gifimage/qgifglobal.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include '/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View' -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/Record/QtGifImageLib/src/gifimage' -I'/home/quinccel/Рабочий стол/s21_projects/CPP4_3DViewer_v2.0-1/src/View/Record/QtGifImageLib/src/3rdParty/giflib' -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/Qt3DExtras -I/usr/include/x86_64-linux-gnu/qt5/Qt3DRender -I/usr/include/x86_64-linux-gnu/qt5/Qt3DInput -I/usr/include/x86_64-linux-gnu/qt5/Qt3DLogic -I/usr/include/x86_64-linux-gnu/qt5/Qt3DCore -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include Record/Screen.h -o moc_Screen.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /mnt/c/Users/G_Rus/source/3DViewer/View/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/mnt/c/Users/G_Rus/source/3DViewer/View -I/mnt/c/Users/G_Rus/source/3DViewer/View/Record/QtGifImageLib/src/gifimage -I/mnt/c/Users/G_Rus/source/3DViewer/View/Record/QtGifImageLib/src/3rdParty/giflib -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include Record/Screen.h -o moc_Screen.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -582,7 +519,7 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean 
+compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_header_clean 
 
 ####### Compile
 
@@ -715,6 +652,9 @@ qgifimage.o: Record/QtGifImageLib/src/gifimage/qgifimage.cpp Record/QtGifImageLi
 		Record/QtGifImageLib/src/gifimage/qgifimage_p.h \
 		Record/QtGifImageLib/src/3rdParty/giflib/gif_lib.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qgifimage.o Record/QtGifImageLib/src/gifimage/qgifimage.cpp
+
+qrc_resources.o: qrc_resources.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_resources.o qrc_resources.cpp
 
 moc_MainWindow.o: moc_MainWindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_MainWindow.o moc_MainWindow.cpp

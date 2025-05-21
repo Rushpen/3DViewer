@@ -18,12 +18,14 @@
 namespace s21 {
 class GifScreenshotWidget : public QWidget {
   Q_OBJECT
-
+friend class MainWindow;
  public:
   GifScreenshotWidget(QWidget *parent = nullptr);
+  void scheduleScreenshot(const QString& baseName);
 
  private:
   void takeScreenshot();
+  void takeIcon(const QString& baseName);
 
   void startRecordingGif();
   void takeGif();

@@ -32,6 +32,7 @@ class MainWindow : public QWidget {
   Controller* controller;
   QHBoxLayout* mainLayout;
   QGridLayout* rightLayout;
+  std::vector<double> previousSliderValues;
 
   void setupUI();
   void printVertixesAndEdgesNumbers();

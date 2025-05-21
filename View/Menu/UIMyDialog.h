@@ -4,6 +4,7 @@
 #include <QRadioButton>
 #include <QSlider>
 #include <QVBoxLayout>
+#include <QLabel>
 
 namespace s21 {
 class MyDialog : public QDialog {

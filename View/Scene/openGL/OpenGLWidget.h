@@ -12,6 +12,7 @@
 #include <QtCore>
 #include <set>
 #include <vector>
+#include <cmath>
 
 #include "../3DViewer_back/mc/controller.h"
 
@@ -57,7 +58,9 @@ class OpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   bool useOrtho;
 
   void wheelEvent(QWheelEvent* event) override;
+  void drawDashedLine3D(float x1, float y1, float z1, float x2, float y2, float z2, int edgeWidth);
   void drawLine();
+  void drawRoundPoint(int segments);
   void drawPoint();
   void mousePressEvent(QMouseEvent* event);
   void mouseMoveEvent(QMouseEvent* event);

@@ -14,18 +14,21 @@ TEST_SRC = ./tests/*.cpp
 BACKEND_OBJECT = $(BACKEND_SRC:.cpp=.o)
 MATRIX_OBJECT = $(MATRIX_SRC:.cpp=.o)
 
-all: clean install
+all: install
 
-install: clean desktop
+install: desktop
 
 desktop:
-	rm -rf desk
 	mkdir desk
 	cd desk && qmake ../View
-	cd desk && make
+	cd desk && make -j$(nproc)
 	mkdir -p build
 	mv desk/3DViewer build
 	rm -rf desk
+
+desktop_clean:
+	rm -rf desk
+	make desktop
 
 lib:
 	sudo apt install qt5-dev

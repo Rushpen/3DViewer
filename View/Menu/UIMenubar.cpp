@@ -12,6 +12,11 @@ void MenuBarWidget::setupMenu() {
   MainMenu = new QMenu("File", this);
   RecordMenu = new QMenu("Screen/Gif", this);
   PreferencesMenu = new QMenu("Edit", this);
+
+  RecentFilesMenu = new QMenu("Recent Files", this);
+  RecentFilesMenu->setStyleSheet(styleRecentFiles);
+  MainMenu->addMenu(RecentFilesMenu);
+
   EdgesMenu = new QMenu("Edges");
   EdgesMenu->setEnabled(false);
 
@@ -52,6 +57,7 @@ void MenuBarWidget::openFileMenu() {
     std::set<segment> faces = controller->get_face();
     QMessageBox::information(this, "File Selected", "File: " + fullFileName);
     emit fileLoaded(points, faces);
+    updateRecentFiles(fullFileName);
   }
 }
 
@@ -122,6 +128,42 @@ void MenuBarWidget::setupEdgesConnections() {
     }
     delete dialog;
   });
+}
+
+void MenuBarWidget::updateRecentFiles(const QString &file) {
+  recentFiles.removeAll(file);
+  recentFiles.prepend(file);
+  if (recentFiles.size() > maxRecentFiles)
+    recentFiles.removeLast();
+
+  rebuildRecentMenu();
+}
+
+void MenuBarWidget::rebuildRecentMenu() {
+  RecentFilesMenu->clear();
+  for (const QString &file : recentFiles) {
+    QFileInfo fileInfo(file);
+    QString shortName = fileInfo.fileName();
+    QString baseName = fileInfo.completeBaseName();
+
+    QAction *action = new QAction(shortName, this);
+    QFont font = action->font();
+    action->setFont(QFont("Arial", 12));
+    action->setData(file);
+
+    QString iconPath = QCoreApplication::applicationDirPath()
+                      +"/../View/Screenshots/icons/" + baseName + ".jpeg";
+    action->setIcon(QIcon(iconPath));
+
+    connect(action, &QAction::triggered, this, [this, action]() {
+      QString fullPath = action->data().toString();
+      controller->start(fullPath.toStdString());
+      std::vector<S21Matrix> points = controller->get_point();
+      std::set<segment> faces = controller->get_face();
+      emit fileLoaded(points, faces);
+    });
+    RecentFilesMenu->addAction(action);
+  }
 }
 
 }  // namespace s21

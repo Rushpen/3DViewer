@@ -23,19 +23,42 @@ void GifScreenshotWidget::takeScreenshot() {
     dir.mkpath(".");
   }
   QWidget *topWidget = QApplication::activeWindow();
-  QPixmap screenshot = topWidget->grab();
+  if (!topWidget) return;
+
+  QPixmap screenshot = topWidget->grab(QRect(11, 31, 400, 400));
 
   QString fileName =
       "screenshot_" + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
-  QString filePath = QFileDialog::getSaveFileName(this, "Save Screenshot",
-                                                  dir.path() + "/" + fileName,
-                                                  "JPEG (*.jpeg);;BMP (*.bmp)");
+    QString selectedFilter;
+    QString filePath = QFileDialog::getSaveFileName(this, "Save Screenshot",
+                                                    dir.path() + "/" + fileName,
+                                                    "JPEG (*.jpeg);;BMP (*.bmp)", &selectedFilter);
   if (!filePath.isEmpty()) {
-    if (filePath.endsWith(".bmp"))
-      screenshot.save(filePath, "BMP");
-    else
-      screenshot.save(filePath, "JPEG");
+    if (selectedFilter.contains("BMP")) {
+      filePath += ".bmp";
+    } else if (selectedFilter.contains("JPEG")) {
+      filePath += ".jpeg";
+    }
+    screenshot.save(filePath);
   }
+}
+
+void GifScreenshotWidget::takeIcon(const QString& baseName) {
+  QDir dir("View/Screenshots/icons");
+  if (!dir.exists()) {
+    dir.mkpath(".");
+  }
+  QWidget *topWidget = QApplication::activeWindow();
+  if (!topWidget) return;
+
+  QPixmap screenshot = topWidget->grab(QRect(111, 131, 200, 200));
+  QString safeName = QFileInfo(baseName).completeBaseName();
+  QString filePath = dir.filePath(safeName + ".jpeg");
+  screenshot.save(filePath, "JPEG");
+}
+
+void GifScreenshotWidget::scheduleScreenshot(const QString& baseName) {
+  QTimer::singleShot(200, this, [this, baseName]() { takeIcon(baseName); });
 }
 
 void GifScreenshotWidget::startRecordingGif() {
@@ -44,6 +67,7 @@ void GifScreenshotWidget::startRecordingGif() {
     dir.mkpath(".");
   }
   topWidget = QApplication::activeWindow();
+  if (!topWidget) return;
   topWidget->setFocus();
   QString fileName =
       "gif_" + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
@@ -51,6 +75,7 @@ void GifScreenshotWidget::startRecordingGif() {
       this, "Save Gif", dir.path() + "/" + fileName, "GIF (*.gif)");
 
   if(!filePath_gif.isEmpty()) {
+    filePath_gif += ".gif";
     count_gif_cadr = 0;
     timer->start(100);
     gifImage = new QGifImage();
@@ -60,9 +85,11 @@ void GifScreenshotWidget::startRecordingGif() {
 
 void GifScreenshotWidget::takeGif() {
   if (count_gif_cadr < limit_gif_cadr) {
-    QPixmap screenshot = topWidget->grab();
+    topWidget->update();
+    topWidget->repaint();
+    QPixmap screenshot = topWidget->grab(QRect(11, 31, 400, 400));
     QImage img = screenshot.toImage();
-    QImage imgSize = img.scaled(QSize(640, 480));
+    QImage imgSize = img.scaled(QSize(400, 400));
     gifImage->addFrame(imgSize, 100);
     count_gif_cadr++;
 

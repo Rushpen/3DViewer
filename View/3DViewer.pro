@@ -1,4 +1,4 @@
-QT += core gui widgets 3dextras
+QT += core gui widgets opengl
 
 CONFIG += c++17
 

@@ -12,6 +12,7 @@
 #include <QString>
 #include <QWidget>
 #include <QWidgetAction>
+#include <QSettings>
 
 #include "../3DViewer_back/mc/controller.h"
 #include "../Record/Screen.h"
@@ -29,6 +30,7 @@ class MenuBarWidget : public QWidget {
   QMenuBar *getMenuBar() { return menuBar; }
   QMenu *getEdgesMenu() { return EdgesMenu; }
   QMenu *getVertixesMenu() { return VertixesMenu; }
+  GifScreenshotWidget *getGifScreenshotWidget() const { return gifScreenshotWidget; }
 
  signals:
   void fileLoaded(const std::vector<S21Matrix> &points,
@@ -61,6 +63,10 @@ class MenuBarWidget : public QWidget {
 
   QWidgetAction *gifScreenshotAction;
 
+  QMenu *RecentFilesMenu;
+  QStringList recentFiles;
+  const int maxRecentFiles = 5;
+
   Controller *controller;
   MyDialog *dialog;
   GifScreenshotWidget *gifScreenshotWidget;
@@ -72,6 +78,20 @@ class MenuBarWidget : public QWidget {
   void setupEdgesConnections();
   void setupVertixesConnections();
   void openFileMenu();
+
+  void updateRecentFiles(const QString &file);
+  void rebuildRecentMenu();
+
+  const QString styleRecentFiles = R"(
+    QMenu::item:selected {
+      background-color: #3399FF; 
+      color: white;  
+    }
+    QMenu {
+      background-color: white;
+      border: 1px solid gray;
+    }
+  )";
 };
 
 }  // namespace s21

@@ -27,7 +27,7 @@ class UIControl : public QWidget {
   QRadioButton* parallelRadio;
   QRadioButton* perspectiveRadio;
 
-  void setupConnection(QSlider* slider, QLineEdit* entry);
+  void setupConnection(QSlider* slider, QLineEdit* entry, bool emitOnRelease);
 
   void addEntryAndSlider(QGridLayout* layout, const QString& labelText, int row,
                          int& col, QWidget* parent);

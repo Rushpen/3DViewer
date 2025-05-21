@@ -17,12 +17,18 @@ void UIControl::setupRightPanel(QGridLayout* rightLayout, QWidget* parent) {
   addRadioButtons(rightLayout, parent);
 }
 
-void UIControl::setupConnection(QSlider* slider, QLineEdit* entry) {
-  QObject::connect(slider, &QSlider::sliderReleased, [slider, entry, this]() {
+void UIControl::setupConnection(QSlider* slider, QLineEdit* entry, bool emitOnRelease) {
+  auto updateEntry = [slider, entry, this]() {
     entry->setText(QString::number(slider->value() / 10.0, 'f', 1));
     emit entryChanged(entry);
-  });
+  };
 
+  if (emitOnRelease) {
+    QObject::connect(slider, &QSlider::sliderReleased, updateEntry);
+  } else {
+    QObject::connect(slider, &QSlider::valueChanged, updateEntry);
+  }
+  
   QObject::connect(entry, &QLineEdit::textChanged, [slider, entry, this]() {
     double value = entry->text().toDouble();
     if (value > slider->maximum()) {
@@ -58,7 +64,8 @@ void UIControl::addEntryAndSlider(QGridLayout* layout, const QString& labelText,
     entry->setFixedWidth(50);
     layout->addWidget(entry, row, col + 2 + i * 2);
 
-    setupConnection(slider, entry);
+    bool emitOnRelease = (row == 2);
+    setupConnection(slider, entry, emitOnRelease);
     slider->setEnabled(false);
     entry->setEnabled(false);
     sliders.push_back(slider);

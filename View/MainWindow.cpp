@@ -35,6 +35,7 @@ void MainWindow::updateScene(const std::vector<S21Matrix> points,
   Scene->getOpenGLWidget()->update();
   unlock();
   printVertixesAndEdgesNumbers();
+  menuBarWidget->getGifScreenshotWidget()->scheduleScreenshot(menuBarWidget->getFilename()); // Для получения иконки
 }
 
 void MainWindow::setupUI() {
@@ -52,18 +53,23 @@ void MainWindow::setupUI() {
 void MainWindow::updateStates(QLineEdit* entry) {
   auto entries = RightPanel->get_entries();
   State Statuses[] = {mv_X, mv_Y, mv_Z, rt_X, rt_Y, rt_Z, scal};
+
   for (size_t i = 0; i < entries.size(); ++i) {
     if (entries[i] == entry) {
-      double value = entries[i]->text().toDouble();
+      double newValue = entries[i]->text().toDouble();
+      double delta = newValue - previousSliderValues[i];
+
       controller->set_status(Statuses[i]);
       if (i < 3) {
-        controller->set_meaning(value / 20);
+        controller->set_meaning(delta / 20);
       } else if (i >= 3 && i < 6) {
-        controller->set_meaning(value);
+        controller->set_meaning(delta);
       } else {
-        controller->set_meaning(value);
+        controller->set_meaning(newValue);
       }
       controller->transform();
+
+      previousSliderValues[i] = newValue;
       break;
     }
   }
@@ -108,6 +114,7 @@ void MainWindow::changeSceneProjection(bool id) {
 void MainWindow::unlock() {
   unlockEntriesAndSliders();
   unlockMenus();
+  previousSliderValues.assign(RightPanel->get_entries().size(), 0.0);
 }
 
 void MainWindow::unlockEntriesAndSliders() {

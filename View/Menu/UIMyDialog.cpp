@@ -5,6 +5,10 @@ MyDialog::MyDialog(QWidget* parent, int min, int max, bool isVertixes)
     : QDialog(parent) {
   layout = new QVBoxLayout(this);
 
+  QLabel* sliderLabel = new QLabel(isVertixes ? "Vertex size" : "Stroke spacing", this);
+  sliderLabel->setAlignment(Qt::AlignHCenter);
+  layout->addWidget(sliderLabel);
+
   slider = new QSlider(Qt::Horizontal, this);
   slider->setRange(min, max);
   slider->setValue(min);
