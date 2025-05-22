@@ -13,7 +13,8 @@ SOURCES += \
     Record/Screen.cpp \
     ../3DViewer_back/back/*.cpp \
     ../3DViewer_back/mc/*.cpp \
-    ../matrix/s21_matrix_oop.cpp
+    ../matrix/s21_matrix_oop.cpp \
+    ../database/settingsManager.cpp
 
 HEADERS += \
     MainWindow.h \
@@ -26,6 +27,7 @@ HEADERS += \
     ../3DViewer_back/back/*.h \
     ../3DViewer_back/mc/*.h \
     ../matrix/s21_matrix_oop.h \
+    ../database/settingsManager.h \
 
 LIBS += -lGLU -lGL
 

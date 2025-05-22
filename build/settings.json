@@ -1,9 +1,9 @@
 {
     "background_color": "#000000",
-    "edge_Color": "#ff0000",
-    "edge_is_solid": true,
-    "edge_width": 2,
+    "edge_Color": "#00ffff",
+    "edge_is_solid": false,
+    "edge_width": 10,
     "vertix_Color": "#0000ff",
-    "vertix_size": 10,
-    "vertix_type": 1
+    "vertix_size": 20,
+    "vertix_type": 2
 }

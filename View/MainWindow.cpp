@@ -35,7 +35,7 @@ void MainWindow::updateScene(const std::vector<S21Matrix> points,
   Scene->getOpenGLWidget()->update();
   unlock();
   printVertixesAndEdgesNumbers();
-  menuBarWidget->getGifScreenshotWidget()->scheduleScreenshot(menuBarWidget->getFilename()); // Для получения иконки
+  menuBarWidget->getGifScreenshotWidget()->scheduleScreenshot(menuBarWidget->getFilename());
 }
 
 void MainWindow::setupUI() {
@@ -138,7 +138,7 @@ void MainWindow::unlockMenus() {
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {
-  getSceneWidget()->getOpenGLWidget()->saveSettingsJson();
+  SettingsManager::saveSettings("build/settings.json", getSceneWidget()->getOpenGLWidget()->getSettings());
   event->accept();
 }
 }  // namespace s21

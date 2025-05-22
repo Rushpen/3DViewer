@@ -4,6 +4,7 @@
 #include <QAction>
 #include <QColorDialog>
 #include <QDebug>
+#include <QVector>
 #include <QDialog>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -16,6 +17,7 @@
 
 #include "../3DViewer_back/mc/controller.h"
 #include "../Record/Screen.h"
+#include "../../database/settingsManager.h"
 #include "UIMyDialog.h"
 
 namespace s21 {

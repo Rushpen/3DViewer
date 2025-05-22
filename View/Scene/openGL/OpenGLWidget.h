@@ -15,6 +15,7 @@
 #include <cmath>
 
 #include "../3DViewer_back/mc/controller.h"
+#include "../database/settingsManager.h"
 
 namespace s21 {
 class OpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
@@ -31,7 +32,9 @@ class OpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   void setEdgeColor(const QColor& color);
   void setEdgeSettings(const int& width, const bool& type);
   void changeProjection(bool useOrtho);
-  void saveSettingsJson();
+
+  OpenGLSettings getSettings() const;
+  void loadSettings();
 
  protected:
   void initializeGL() override;
@@ -69,8 +72,6 @@ class OpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   void setCamera();
   void setOrthoProjection();
   void setPerspectiveProjection();
-
-  void loadSettingsJson();
 };
 }  // namespace s21
 

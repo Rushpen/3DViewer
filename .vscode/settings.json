@@ -7,6 +7,9 @@
         "memory": "cpp",
         "vector": "cpp",
         "xstring": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "xiosbase": "cpp",
+        "system_error": "cpp",
+        "xlocale": "cpp"
     }
 }

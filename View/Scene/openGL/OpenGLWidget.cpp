@@ -53,7 +53,7 @@ void OpenGLWidget::initializeGL() {
   initializeOpenGLFunctions();
   glClearColor(backgroundColor.redF(), backgroundColor.greenF(),
                backgroundColor.blueF(), 1.0f);
-  loadSettingsJson();
+  loadSettings();
 }
 
 void OpenGLWidget::resizeGL() { glViewport(0, 0, 400, 200); }
@@ -270,39 +270,30 @@ void OpenGLWidget::wheelEvent(QWheelEvent* event) {
   update();
 }
 
-void OpenGLWidget::saveSettingsJson() {
-  QJsonObject settings;
-  settings["background_color"] = backgroundColor.name();
-  settings["vertix_Color"] = vertixColor.name();
-  settings["vertix_size"] = pointSize;
-  settings["vertix_type"] = typePoint;
-  settings["edge_Color"] = edgeColor.name();
-  settings["edge_width"] = edgeWidth;
-  settings["edge_is_solid"] = isSolid;
-
-  QFile file("build/settings.json");
-  if (file.open(QIODevice::WriteOnly)) {
-    file.write(QJsonDocument(settings).toJson());
-    file.close();
-  }
+OpenGLSettings OpenGLWidget::getSettings() const {
+  return {
+    backgroundColor, vertixColor, pointSize,
+    typePoint, edgeColor, edgeWidth, isSolid
+  };
 }
 
-void OpenGLWidget::loadSettingsJson() {
-  QFile file("build/settings.json");
-  if (file.open(QIODevice::ReadOnly)) {
-    QByteArray data = file.readAll();
-    QJsonDocument doc = QJsonDocument::fromJson(data);
-    QJsonObject settings = doc.object();
+void OpenGLWidget::loadSettings() {
+  QString path = QCoreApplication::applicationDirPath() + "/build/settings.json";
+  
+  QFile file(path);
+  if (!file.exists())
+    return;
 
-    backgroundColor = settings.value("background_color").toString();
-    vertixColor = settings.value("vertix_Color").toString();
-    pointSize = settings.value("vertix_size").toInt();
-    typePoint = settings.value("vertix_type").toInt();
-    edgeColor = settings.value("edge_Color").toString();
-    edgeWidth = settings.value("edge_width").toInt();
-    isSolid = settings.value("edge_is_solid").toBool();
-    file.close();
-  }
+  OpenGLSettings settings = SettingsManager::loadSettings(path);
+
+  backgroundColor = settings.backgroundColor;
+  vertixColor = settings.vertexColor;
+  pointSize = settings.vertexSize;
+  typePoint = settings.vertexType;
+  edgeColor = settings.edgeColor;
+  edgeWidth = settings.edgeWidth;
+  isSolid = settings.isSolid;
 }
+
 
 }  // namespace s21
