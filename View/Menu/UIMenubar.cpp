@@ -5,6 +5,7 @@ MenuBarWidget::MenuBarWidget(Controller *controller, QWidget *parent)
     : QWidget(parent), controller(controller) {
   setupMenu();
   setupConnections();
+  loadRecentFilesFromSettings();
 }
 
 void MenuBarWidget::setupMenu() {
@@ -58,6 +59,16 @@ void MenuBarWidget::openFileMenu() {
     QMessageBox::information(this, "File Selected", "File: " + fullFileName);
     emit fileLoaded(points, faces);
     updateRecentFiles(fullFileName);
+
+    RecentFileInfo info;
+    info.filename = fullFileName;
+    info.modelName = fileInfo.completeBaseName();
+    info.vertices = points.size();
+    info.edges = faces.size();
+    info.openedAt = QDateTime::currentDateTime();
+
+    QString recentFilePath = QCoreApplication::applicationDirPath() + "/recent_files.json";
+    SettingsManager::insertRecentFile(recentFilePath, info);
   }
 }
 
@@ -164,6 +175,19 @@ void MenuBarWidget::rebuildRecentMenu() {
     });
     RecentFilesMenu->addAction(action);
   }
+}
+
+void MenuBarWidget::loadRecentFilesFromSettings() {
+  QString path = QCoreApplication::applicationDirPath() + "/recent_files.json";
+  QVector<RecentFileInfo> savedFiles = SettingsManager::loadRecentFiles(path);
+
+  recentFiles.clear();
+
+  for (const RecentFileInfo &info : savedFiles) {
+    recentFiles.append(info.filename);
+  }
+
+  rebuildRecentMenu();
 }
 
 }  // namespace s21

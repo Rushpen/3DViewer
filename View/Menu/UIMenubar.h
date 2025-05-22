@@ -83,6 +83,7 @@ class MenuBarWidget : public QWidget {
 
   void updateRecentFiles(const QString &file);
   void rebuildRecentMenu();
+  void loadRecentFilesFromSettings();
 
   const QString styleRecentFiles = R"(
     QMenu::item:selected {
