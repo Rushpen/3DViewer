@@ -29,14 +29,15 @@ friend class MainWindow;
   void openScreenshotDialog();
   void openGifScreenshotDialog();
 
-  void takeScreenshot(const QSize &size, const QString &filePath);
+  void takeScreenshot(const QSize &size, const QString &filePath, const bool isFull);
   void takeIcon(const QString& baseName);
 
-  void startRecordingGif(const QSize &size, const QString &filePath);
+  void startRecordingGif(const QSize &size, const QString &filePath, const bool isFull);
   void takeGif();
 
  private:
   QSize size_;
+  bool isFullScreen_;
   QString filePath_gif;
   QWidget *topWidget;
   QGifImage *gifImage;

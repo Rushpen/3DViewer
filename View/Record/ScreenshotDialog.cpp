@@ -3,7 +3,7 @@
 namespace s21 {
 ScreenshotDialog::ScreenshotDialog(QWidget* parent)
     : QDialog(parent) {
-  setWindowTitle("Сделать скриншот");
+  setWindowTitle("Настройки скриншота");
   layout = new QVBoxLayout(this);
   widthBox_ = new QSpinBox(this);
   heightBox_ = new QSpinBox(this);
@@ -23,6 +23,9 @@ ScreenshotDialog::ScreenshotDialog(QWidget* parent)
   layout->addWidget(heightLabel);
   layout->addWidget(heightBox_);
 
+  fullscreenCheckBox_ = new QCheckBox("Всё окно", this);
+  layout->addWidget(fullscreenCheckBox_, 0, Qt::AlignHCenter);
+
   pathEdit_ = new QLineEdit(this);
   pathEdit_->setText("View/Screenshots/");
   browseButton_ = new QPushButton("Обзор...", this);
@@ -30,16 +33,24 @@ ScreenshotDialog::ScreenshotDialog(QWidget* parent)
   QHBoxLayout* pathLayout = new QHBoxLayout;
   pathLayout->addWidget(pathEdit_);
   pathLayout->addWidget(browseButton_);
-
   layout->addLayout(pathLayout);
 
   buttonOk = new QPushButton("OK", this);
   layout->addWidget(buttonOk);
   layout->setAlignment(Qt::AlignHCenter);
+
+  connect(fullscreenCheckBox_, &QCheckBox::toggled, this, &ScreenshotDialog::onFullscreenToggled);
   connect(buttonOk, &QPushButton::clicked, this, &ScreenshotDialog::onOkClicked);
   connect(browseButton_, &QPushButton::clicked, this, &ScreenshotDialog::onBrowseClicked);
+}
 
-  setFixedSize(250, 150);
+void ScreenshotDialog::onFullscreenToggled(bool checked) {
+  widthBox_->setDisabled(checked);
+  heightBox_->setDisabled(checked);
+}
+
+bool ScreenshotDialog::isFullScreen() {
+  return fullscreenCheckBox_->isChecked();
 }
 
 QSize ScreenshotDialog::selectedSize() const {
@@ -72,10 +83,9 @@ void ScreenshotDialog::onOkClicked() {
     }
   }
 
-  emit screenshotRequested(size, path);
+  emit screenshotRequested(size, path, isFullScreen());
   accept();
 }
-
 
 void ScreenshotDialog::onBrowseClicked() {
   QString fileName = "screenshot_" + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");

@@ -12,6 +12,8 @@
 #include <QMessageBox>
 #include <QDateTime>
 #include <QFileInfo>
+#include <QCheckBox>
+#include <QApplication>
 
 namespace s21 {
 class ScreenshotDialog : public QDialog {
@@ -27,9 +29,11 @@ class ScreenshotDialog : public QDialog {
  private slots:
   void onOkClicked();
   virtual void onBrowseClicked();
+  void onFullscreenToggled(bool checked);
+  bool isFullScreen();
 
  signals:
-  void screenshotRequested(QSize size, QString filePath);
+  void screenshotRequested(QSize size, QString filePath, bool isFullScreen);
 
  protected:
   QVBoxLayout *layout;
@@ -38,5 +42,6 @@ class ScreenshotDialog : public QDialog {
   QSpinBox* heightBox_;
   QPushButton *buttonOk;
   QPushButton* browseButton_;
+  QCheckBox* fullscreenCheckBox_ = nullptr;
 };
 }

@@ -34,22 +34,27 @@ void GifScreenshotWidget::openGifScreenshotDialog() {
   if (dialog.exec() == QDialog::Accepted) {}
 }
 
-void GifScreenshotWidget::takeScreenshot(const QSize &size, const QString &filePath) {
+void GifScreenshotWidget::takeScreenshot(const QSize &size, const QString &filePath, const bool isFull) {
   if (filePath.isEmpty()) return;
 
   QTimer::singleShot(100, this, [=]() {
     QWidget *topWidget = QApplication::activeWindow();
     if (!topWidget) return;
-
-    QPixmap screenshot = topWidget->grab(QRect(11, 31, size.width(), size.height()));
+    QPixmap screenshot;
+    if (isFull) {
+      screenshot = topWidget->grab();
+    } else {
+      screenshot = topWidget->grab(QRect(11, 31, size.width(), size.height()));
+    }
     screenshot.save(filePath);
   });
 }
 
-void GifScreenshotWidget::startRecordingGif(const QSize &size, const QString &filePath) {
+void GifScreenshotWidget::startRecordingGif(const QSize &size, const QString &filePath, const bool isFull) {
   if (filePath.isEmpty()) return;
   size_ = size;
   filePath_gif = filePath;
+  isFullScreen_ = isFull;
   QTimer::singleShot(150, this, [=]() {
     topWidget = QApplication::activeWindow();
     if (!topWidget) return;
@@ -68,10 +73,15 @@ void GifScreenshotWidget::takeGif() {
   if (count_gif_cadr < limit_gif_cadr) {
     topWidget->update();
     topWidget->repaint();
-    QPixmap screenshot = topWidget->grab(QRect(11, 31, size_.width(), size_.height()));
+    QPixmap screenshot;
+    if(isFullScreen_) {
+       screenshot = topWidget->grab();
+    } else {
+      screenshot = topWidget->grab(QRect(11, 31, size_.width(), size_.height()));
+    }
+    
     QImage img = screenshot.toImage();
-    QImage imgSize = img.scaled(QSize(400, 400));
-    gifImage->addFrame(imgSize, 100);
+    gifImage->addFrame(img, 100);
     count_gif_cadr++;
 
   } else {
