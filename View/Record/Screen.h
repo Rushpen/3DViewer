@@ -12,8 +12,10 @@
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <QSize>
 
 #include "QtGifImageLib/src/gifimage/qgifimage.h"
+#include "ScreenshotDialog.h"
 
 namespace s21 {
 class GifScreenshotWidget : public QWidget {
@@ -24,7 +26,9 @@ friend class MainWindow;
   void scheduleScreenshot(const QString& baseName);
 
  private:
-  void takeScreenshot();
+  void openScreenshotDialog();
+
+  void takeScreenshot(const QSize &size, const QString &filePath);
   void takeIcon(const QString& baseName);
 
   void startRecordingGif();

@@ -1,112 +1,155 @@
 #include "settingsmanager.h"
-#include <QFile>
-#include <QJsonDocument>
-#include <QJsonObject>
 
-OpenGLSettings SettingsManager::loadSettings(const QString& path) {
-  OpenGLSettings settings;
-  QFile file(path);
-  if (file.open(QIODevice::ReadOnly)) {
-    QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
-    QJsonObject obj = doc.object();
+bool SettingsManager::connectToDatabase() {
+  QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL");
+  db.setHostName("localhost");
+  db.setDatabaseName("viewer_db");
+  db.setUserName("postgres");
+  db.setPassword("1");
 
-    settings.backgroundColor = QColor(obj["background_color"].toString());
-    settings.vertexColor = QColor(obj["vertix_Color"].toString());
-    settings.vertexSize = obj["vertix_size"].toInt();
-    settings.vertexType = obj["vertix_type"].toInt();
-    settings.edgeColor = QColor(obj["edge_Color"].toString());
-    settings.edgeWidth = obj["edge_width"].toInt();
-    settings.isSolid = obj["edge_is_solid"].toBool();
-    file.close();
+  if (!db.open()) {
+    qDebug() << "Failed to connect to DB:" << db.lastError().text();
+    return false;
   }
-  return settings;
+
+  QSqlQuery query(db);
+  bool ok1 = query.exec(R"(
+    CREATE TABLE IF NOT EXISTS recent_files (
+      id SERIAL PRIMARY KEY,
+      filename TEXT NOT NULL,
+      model_name TEXT,
+      vertices INTEGER,
+      edges INTEGER,
+      opened_at TIMESTAMP
+    )
+  )");
+
+  bool ok2 =  query.exec(R"(
+    CREATE TABLE IF NOT EXISTS scene_settings (
+    background_color TEXT,
+    vertex_color TEXT,
+    vertex_size INTEGER,
+    vertex_type INTEGER,
+    edge_color TEXT,
+    edge_width INTEGER,
+    is_solid BOOLEAN
+  )
+  )");
+  return ok1 && ok2;
 }
 
-void SettingsManager::saveSettings(const QString& path, const OpenGLSettings& settings) {
-  QJsonObject obj;
-  obj["background_color"] = settings.backgroundColor.name();
-  obj["vertix_Color"] = settings.vertexColor.name();
-  obj["vertix_size"] = settings.vertexSize;
-  obj["vertix_type"] = settings.vertexType;
-  obj["edge_Color"] = settings.edgeColor.name();
-  obj["edge_width"] = settings.edgeWidth;
-  obj["edge_is_solid"] = settings.isSolid;
+void SettingsManager::saveSettings(const OpenGLSettings& settings) {
+    QSqlDatabase db = QSqlDatabase::database(); 
+    if (!db.isOpen()) return;
 
-  QFile file(path);
-  if (file.open(QIODevice::WriteOnly)) {
-    file.write(QJsonDocument(obj).toJson());
-    file.close();
-  }
-}
+    QSqlQuery query(db);
 
-bool SettingsManager::insertRecentFile(const QString& path,
-                                       const RecentFileInfo& recentInfo) {
-  const QString jsonPath = path;
-  QJsonArray recentArray;
-
-  QFile file(jsonPath);
-  if (file.open(QIODevice::ReadOnly)) {
-    QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
-    if (doc.isArray())
-      recentArray = doc.array();
-    file.close();
-  }
-
-  for (int i = 0; i < recentArray.size(); ++i) {
-    if (recentArray[i].toObject()["filename"].toString() == recentInfo.filename) {
-      recentArray.removeAt(i);
-      break;
+    if (!query.exec("DELETE FROM scene_settings")) {
+        qDebug() << "Error deleting existing settings:" << query.lastError().text();
+        return;
     }
-  }
 
-  QJsonObject obj;
-  obj["filename"] = recentInfo.filename;
-  obj["model_name"] = recentInfo.modelName;
-  obj["vertices_count"] = recentInfo.vertices;
-  obj["edges_count"] = recentInfo.edges;
-  obj["opened_at"] = recentInfo.openedAt.toString(Qt::ISODate);
+    query.prepare(R"(
+        INSERT INTO scene_settings (
+            background_color, vertex_color, vertex_size, vertex_type, 
+            edge_color, edge_width, is_solid
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+    )");
+    
+    query.addBindValue(settings.backgroundColor.name());
+    query.addBindValue(settings.vertexColor.name());
+    query.addBindValue(settings.vertexSize);
+    query.addBindValue(settings.vertexType);
+    query.addBindValue(settings.edgeColor.name());
+    query.addBindValue(settings.edgeWidth);
+    query.addBindValue(settings.isSolid);
 
-  recentArray.prepend(obj);
-
-  const int maxRecent = 10;
-  while (recentArray.size() > maxRecent)
-    recentArray.removeLast();
-
-  if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-    QJsonDocument saveDoc(recentArray);
-    file.write(saveDoc.toJson());
-    file.close();
-    return true;
-  }
-
-  return false;
+    if (!query.exec()) {
+        qDebug() << "Error inserting settings:" << query.lastError().text();
+        return;
+    }
 }
 
-QVector<RecentFileInfo> SettingsManager::loadRecentFiles(const QString& path) {
+bool SettingsManager::loadSettings(OpenGLSettings &settings) {
+  QSqlDatabase db = QSqlDatabase::database();
+  QSqlQuery query(db);
+
+  if (!query.exec(R"(SELECT
+                  background_color, vertex_color, vertex_size, vertex_type, edge_color, edge_width, is_solid 
+                  FROM scene_settings
+                  LIMIT 1)")) {
+    qDebug() << "Failed to load settings from DB:" << query.lastError().text();
+    return false;
+  }
+
+  if (!query.next()) { return false; }
+
+  settings.backgroundColor = QColor(query.value(0).toString());
+  settings.vertexColor = QColor(query.value(1).toString());
+  settings.vertexSize = query.value(2).toInt();
+  settings.vertexType = query.value(3).toInt();
+  settings.edgeColor = QColor(query.value(4).toString());
+  settings.edgeWidth = query.value(5).toInt();
+  settings.isSolid = query.value(6).toBool();
+
+  return true;
+}
+
+
+bool SettingsManager::insertRecentFile(const RecentFileInfo& recentInfo) {
+  QSqlDatabase db = QSqlDatabase::database(); 
+  if (!db.isOpen()) return false;
+
+  QSqlQuery query(db);
+
+  query.prepare("DELETE FROM recent_files WHERE filename = :filename");
+  query.bindValue(":filename", recentInfo.filename);
+
+  if (!query.exec()) {
+    qDebug() << "Error deleting existing file:" << query.lastError().text();
+    return false;
+  }
+
+  query.prepare(R"(
+    INSERT INTO recent_files (filename, model_name, vertices, edges, opened_at)
+    VALUES (:filename, :model_name, :vertices, :edges, :opened_at)
+  )");
+  query.bindValue(":filename", recentInfo.filename);
+  query.bindValue(":model_name", recentInfo.modelName);
+  query.bindValue(":vertices", recentInfo.vertices);
+  query.bindValue(":edges", recentInfo.edges);
+  query.bindValue(":opened_at", recentInfo.openedAt);
+
+  if (!query.exec()) {
+    qDebug() << "Error inserting recent file:" << query.lastError().text();
+    return false;
+  }
+
+  return true;
+}
+
+QVector<RecentFileInfo> SettingsManager::loadRecentFiles() {
   QVector<RecentFileInfo> result;
+  QSqlDatabase db = QSqlDatabase::database();
+  if (!db.isOpen()) return result;
 
-  QFile file(path);
-  if (!file.open(QIODevice::ReadOnly))
+  QSqlQuery query(db);
+  if (!query.exec("SELECT filename, model_name, vertices, edges, opened_at "
+                  "FROM recent_files ORDER BY opened_at DESC LIMIT 10")) {
+    qDebug() << "Error loading recent files:" << query.lastError().text();
     return result;
+  }
 
-  QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
-  file.close();
-
-  if (!doc.isArray())
-    return result;
-
-  for (const QJsonValue& val : doc.array()) {
-    if (!val.isObject()) continue;
-
-    QJsonObject obj = val.toObject();
+  while (query.next()) {
     RecentFileInfo info;
-    info.filename = obj["filename"].toString();
-    info.modelName = obj["model_name"].toString();
-    info.vertices = obj["vertices_count"].toInt();
-    info.edges = obj["edges_count"].toInt();
-    info.openedAt = QDateTime::fromString(obj["opened_at"].toString(), Qt::ISODate);
+    info.filename = query.value("filename").toString();
+    info.modelName = query.value("model_name").toString();
+    info.vertices = query.value("vertices").toInt();
+    info.edges = query.value("edges").toInt();
+    info.openedAt = query.value("opened_at").toDateTime();
     result.append(info);
   }
 
   return result;
 }
+

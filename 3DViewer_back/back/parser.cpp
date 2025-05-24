@@ -22,9 +22,9 @@ int parser::open_file(const std::string &file_name) {
   if (file.is_open()) {
     std::string current_line;
     while (
-        std::getline(file, current_line)) {  // убрал в условии проверку error -
+        std::getline(file, current_line)) {
       int lineError = selection_parser(
-          current_line);  // - после f не давало считывать точки
+          current_line);
 
       if (lineError != 0) error = lineError;
     }
@@ -80,8 +80,6 @@ int parser::pr_point(const std::string &current_line) {
 
 int parser::pr_face(const std::string &current_line) {
   int error = 0;
-
-  // Предварительная обработка строки: убираем все символы после первого слэша
   std::string cleaned_line;
   bool skip = false;
 

@@ -81,6 +81,8 @@ class MenuBarWidget : public QWidget {
   void setupVertixesConnections();
   void openFileMenu();
 
+  void onSetScreenshotSizeClicked();
+
   void updateRecentFiles(const QString &file);
   void rebuildRecentMenu();
   void loadRecentFilesFromSettings();

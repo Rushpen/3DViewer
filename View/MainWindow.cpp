@@ -138,7 +138,7 @@ void MainWindow::unlockMenus() {
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {
-  SettingsManager::saveSettings("build/settings.json", getSceneWidget()->getOpenGLWidget()->getSettings());
+  SettingsManager::saveSettings(getSceneWidget()->getOpenGLWidget()->getSettings());
   event->accept();
 }
 }  // namespace s21

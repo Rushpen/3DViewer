@@ -278,13 +278,8 @@ OpenGLSettings OpenGLWidget::getSettings() const {
 }
 
 void OpenGLWidget::loadSettings() {
-  QString path = QCoreApplication::applicationDirPath() + "/build/settings.json";
-  
-  QFile file(path);
-  if (!file.exists())
-    return;
-
-  OpenGLSettings settings = SettingsManager::loadSettings(path);
+  OpenGLSettings settings;
+  if (!SettingsManager::loadSettings(settings)) { return; }
 
   backgroundColor = settings.backgroundColor;
   vertixColor = settings.vertexColor;

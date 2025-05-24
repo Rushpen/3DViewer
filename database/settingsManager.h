@@ -1,12 +1,13 @@
 #pragma once
 #include <QColor>
 #include <QString>
-#include <QJsonObject>
-#include <QFile>
-#include <QJsonArray>
-#include <QJsonDocument>
 #include <QDateTime>
 #include <QVector>
+#include <QDebug>
+
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
 
 struct OpenGLSettings {
   QColor backgroundColor;
@@ -28,9 +29,9 @@ struct RecentFileInfo {
 
 class SettingsManager {
  public:
-  static OpenGLSettings loadSettings(const QString& path);
-  static void saveSettings(const QString& path, const OpenGLSettings& settings);
-  static bool insertRecentFile(const QString& path,
-                                       const RecentFileInfo& recentInfo);
-  static QVector<RecentFileInfo> loadRecentFiles(const QString& path);
+  static bool connectToDatabase();
+  static bool loadSettings(OpenGLSettings &settings);
+  static void saveSettings(const OpenGLSettings& settings);
+  static bool insertRecentFile(const RecentFileInfo& recentInfo);
+  static QVector<RecentFileInfo> loadRecentFiles();
 };

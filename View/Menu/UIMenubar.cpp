@@ -68,7 +68,7 @@ void MenuBarWidget::openFileMenu() {
     info.openedAt = QDateTime::currentDateTime();
 
     QString recentFilePath = QCoreApplication::applicationDirPath() + "/recent_files.json";
-    SettingsManager::insertRecentFile(recentFilePath, info);
+    SettingsManager::insertRecentFile(info);
   }
 }
 
@@ -141,6 +141,14 @@ void MenuBarWidget::setupEdgesConnections() {
   });
 }
 
+// void MenuBarWidget::onSetScreenshotSizeClicked() {
+//   ScreenshotDialog dialog(this);
+//   if (dialog.exec() == QDialog::Accepted) {
+//     QSize size = dialog.selectedSize();
+//     //gifScreenshotWidget->setScreenshotSize(size);
+//   }
+// }
+
 void MenuBarWidget::updateRecentFiles(const QString &file) {
   recentFiles.removeAll(file);
   recentFiles.prepend(file);
@@ -178,8 +186,7 @@ void MenuBarWidget::rebuildRecentMenu() {
 }
 
 void MenuBarWidget::loadRecentFilesFromSettings() {
-  QString path = QCoreApplication::applicationDirPath() + "/recent_files.json";
-  QVector<RecentFileInfo> savedFiles = SettingsManager::loadRecentFiles(path);
+  QVector<RecentFileInfo> savedFiles = SettingsManager::loadRecentFiles();
 
   recentFiles.clear();
 

@@ -1,4 +1,4 @@
-QT += core gui widgets opengl
+QT += core gui widgets opengl sql
 
 CONFIG += c++17
 
@@ -11,6 +11,7 @@ SOURCES += \
     Menu/UIMenubar.cpp \
     Menu/UIMyDialog.cpp \
     Record/Screen.cpp \
+    Record/ScreenshotDialog.cpp \
     ../3DViewer_back/back/*.cpp \
     ../3DViewer_back/mc/*.cpp \
     ../matrix/s21_matrix_oop.cpp \
@@ -24,6 +25,7 @@ HEADERS += \
     Menu/UIMenubar.h \
     Menu/UIMyDialog.h \
     Record/Screen.h \
+    Record/ScreenshotDialog.h \
     ../3DViewer_back/back/*.h \
     ../3DViewer_back/mc/*.h \
     ../matrix/s21_matrix_oop.h \

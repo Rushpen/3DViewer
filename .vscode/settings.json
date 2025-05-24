@@ -11,5 +11,18 @@
         "xiosbase": "cpp",
         "system_error": "cpp",
         "xlocale": "cpp"
-    }
+    },
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "Viewer",
+            "database": "viewer_db",
+            "username": "postgres",
+            "password": "1"
+        }
+    ],
+    "C_Cpp.errorSquiggles": "disabled"
 }

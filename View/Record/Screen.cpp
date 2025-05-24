@@ -5,43 +5,39 @@ GifScreenshotWidget::GifScreenshotWidget(QWidget *parent) : QWidget(parent) {
   timer = new QTimer(this);
   QPushButton *button_screen = new QPushButton("Screen", this);
   connect(button_screen, &QPushButton::clicked, this,
-          &GifScreenshotWidget::takeScreenshot);
+          &GifScreenshotWidget::openScreenshotDialog);
 
   limit_gif_cadr = 50;
   QPushButton *button_gif = new QPushButton("Gif", this);
   connect(button_gif, &QPushButton::clicked, this,
           &GifScreenshotWidget::startRecordingGif);
+
   QVBoxLayout *layout = new QVBoxLayout();
   layout->addWidget(button_screen);
   layout->addWidget(button_gif);
   setLayout(layout);
 }
 
-void GifScreenshotWidget::takeScreenshot() {
-  QDir dir("View/Screenshots");
-  if (!dir.exists()) {
-    dir.mkpath(".");
-  }
-  QWidget *topWidget = QApplication::activeWindow();
-  if (!topWidget) return;
-
-  QPixmap screenshot = topWidget->grab(QRect(11, 31, 400, 400));
-
-  QString fileName =
-      "screenshot_" + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
-    QString selectedFilter;
-    QString filePath = QFileDialog::getSaveFileName(this, "Save Screenshot",
-                                                    dir.path() + "/" + fileName,
-                                                    "JPEG (*.jpeg);;BMP (*.bmp)", &selectedFilter);
-  if (!filePath.isEmpty()) {
-    if (selectedFilter.contains("BMP")) {
-      filePath += ".bmp";
-    } else if (selectedFilter.contains("JPEG")) {
-      filePath += ".jpeg";
-    }
-    screenshot.save(filePath);
-  }
+void GifScreenshotWidget::openScreenshotDialog() {
+  s21::ScreenshotDialog dialog(this);
+  connect(&dialog, &s21::ScreenshotDialog::screenshotRequested,
+          this, &GifScreenshotWidget::takeScreenshot);
+  
+  if (dialog.exec() == QDialog::Accepted) {}
 }
+
+void GifScreenshotWidget::takeScreenshot(const QSize &size, const QString &filePath) {
+  if (filePath.isEmpty()) return;
+
+  QTimer::singleShot(100, this, [=]() {
+    QWidget *topWidget = QApplication::activeWindow();
+    if (!topWidget) return;
+
+    QPixmap screenshot = topWidget->grab(QRect(11, 31, size.width(), size.height()));
+    screenshot.save(filePath);
+  });
+}
+
 
 void GifScreenshotWidget::takeIcon(const QString& baseName) {
   QDir dir("View/Screenshots/icons");
