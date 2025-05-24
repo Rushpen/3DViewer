@@ -15,7 +15,7 @@
 #include <QSize>
 
 #include "QtGifImageLib/src/gifimage/qgifimage.h"
-#include "ScreenshotDialog.h"
+#include "GifScreenshotDialog.h"
 
 namespace s21 {
 class GifScreenshotWidget : public QWidget {
@@ -27,16 +27,18 @@ friend class MainWindow;
 
  private:
   void openScreenshotDialog();
+  void openGifScreenshotDialog();
 
   void takeScreenshot(const QSize &size, const QString &filePath);
   void takeIcon(const QString& baseName);
 
-  void startRecordingGif();
+  void startRecordingGif(const QSize &size, const QString &filePath);
   void takeGif();
 
  private:
-  QWidget *topWidget;
+  QSize size_;
   QString filePath_gif;
+  QWidget *topWidget;
   QGifImage *gifImage;
   QTimer *timer;
   int count_gif_cadr;

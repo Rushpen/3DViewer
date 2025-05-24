@@ -10,7 +10,10 @@
         "xutility": "cpp",
         "xiosbase": "cpp",
         "system_error": "cpp",
-        "xlocale": "cpp"
+        "xlocale": "cpp",
+        "initializer_list": "cpp",
+        "type_traits": "cpp",
+        "xtree": "cpp"
     },
     "sqltools.connections": [
         {

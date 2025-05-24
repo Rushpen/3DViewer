@@ -22,16 +22,16 @@ class ScreenshotDialog : public QDialog {
   ~ScreenshotDialog() = default;
 
   QSize selectedSize() const;
-  QString selectedPath() const;
+  virtual QString selectedPath() const;
 
  private slots:
   void onOkClicked();
-  void onBrowseClicked();
+  virtual void onBrowseClicked();
 
  signals:
   void screenshotRequested(QSize size, QString filePath);
 
- private:
+ protected:
   QVBoxLayout *layout;
   QLineEdit* pathEdit_;
   QSpinBox* widthBox_;
