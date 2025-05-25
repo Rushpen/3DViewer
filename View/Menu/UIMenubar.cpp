@@ -57,18 +57,22 @@ void MenuBarWidget::openFileMenu() {
     std::vector<S21Matrix> points = controller->get_point();
     std::set<segment> faces = controller->get_face();
     QMessageBox::information(this, "File Selected", "File: " + fullFileName);
-    emit fileLoaded(points, faces);
     updateRecentFiles(fullFileName);
+
+    ModelData model;
+    model.name = fileInfo.completeBaseName();
+    model.verticesCount = points.size();
+    model.edgesCount = faces.size();
+
+    int modelId = SettingsManager::saveOrFindModel(model);
+    emit modelIdChanged(modelId);
+
+    emit fileLoaded(points, faces, modelId);
 
     RecentFileInfo info;
     info.filename = fullFileName;
-    info.modelName = fileInfo.completeBaseName();
-    info.vertices = points.size();
-    info.edges = faces.size();
     info.openedAt = QDateTime::currentDateTime();
-
-    QString recentFilePath = QCoreApplication::applicationDirPath() + "/recent_files.json";
-    SettingsManager::insertRecentFile(info);
+    SettingsManager::insertRecentFile(info, model);
   }
 }
 
@@ -141,14 +145,6 @@ void MenuBarWidget::setupEdgesConnections() {
   });
 }
 
-// void MenuBarWidget::onSetScreenshotSizeClicked() {
-//   ScreenshotDialog dialog(this);
-//   if (dialog.exec() == QDialog::Accepted) {
-//     QSize size = dialog.selectedSize();
-//     //gifScreenshotWidget->setScreenshotSize(size);
-//   }
-// }
-
 void MenuBarWidget::updateRecentFiles(const QString &file) {
   recentFiles.removeAll(file);
   recentFiles.prepend(file);
@@ -179,7 +175,15 @@ void MenuBarWidget::rebuildRecentMenu() {
       controller->start(fullPath.toStdString());
       std::vector<S21Matrix> points = controller->get_point();
       std::set<segment> faces = controller->get_face();
-      emit fileLoaded(points, faces);
+
+      ModelData model;
+      model.name = QFileInfo(fullPath).completeBaseName();
+      model.verticesCount = points.size();
+      model.edgesCount = faces.size();
+
+      int modelId = SettingsManager::saveOrFindModel(model);
+      emit modelIdChanged(modelId);
+      emit fileLoaded(points, faces, modelId);
     });
     RecentFilesMenu->addAction(action);
   }

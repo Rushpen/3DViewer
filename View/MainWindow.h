@@ -25,7 +25,13 @@ class MainWindow : public QWidget {
   void updateStates(QLineEdit* entry);
   UIScene* getSceneWidget() { return Scene; }
 
+  void setModelId(int id) {modelId = id;}
+
+  private slots:
+    void onModelIdChanged(int modelId);
+
  private:
+  int modelId = -1;
   UIScene* Scene;
   UIControl* RightPanel;
   MenuBarWidget* menuBarWidget;

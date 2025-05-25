@@ -5,13 +5,7 @@
 
 namespace s21 {
 OpenGLWidget::OpenGLWidget(QWidget* parent) : QOpenGLWidget(parent) {
-  backgroundColor = QColor(0, 0, 0);
-  vertixColor = QColor(0, 0, 255);
-  edgeColor = QColor(255, 0, 255);
-  pointSize = 5;
-  edgeWidth = 2;
-  isSolid = true;
-  typePoint = 1;
+  setToDefaults();
   angleY = 0.0f;
   angleX = 0.0f;
   cameraRadius = 10.0f;
@@ -20,6 +14,16 @@ OpenGLWidget::OpenGLWidget(QWidget* parent) : QOpenGLWidget(parent) {
                  -cameraRadius * 1.5f, cameraRadius * 1.5f,
                  -cameraRadius * 1.5f, cameraRadius * 1.5f};
   perspectiveParams = {90.0, 1.0, 0.1, 200.0};
+}
+
+void OpenGLWidget::setToDefaults() {
+  backgroundColor = QColor(0, 0, 0);
+  vertixColor = QColor(0, 0, 255);
+  edgeColor = QColor(255, 0, 255);
+  pointSize = 5;
+  edgeWidth = 2;
+  isSolid = true;
+  typePoint = 1;
 }
 
 void OpenGLWidget::setBackgroundColor(const QColor& color) {
@@ -279,7 +283,10 @@ OpenGLSettings OpenGLWidget::getSettings() const {
 
 void OpenGLWidget::loadSettings() {
   OpenGLSettings settings;
-  if (!SettingsManager::loadSettings(settings)) { return; }
+  if (!SettingsManager::loadSettings(settings, modelId)) { 
+    setToDefaults();
+    return; 
+  }
 
   backgroundColor = settings.backgroundColor;
   vertixColor = settings.vertexColor;
@@ -288,6 +295,8 @@ void OpenGLWidget::loadSettings() {
   edgeColor = settings.edgeColor;
   edgeWidth = settings.edgeWidth;
   isSolid = settings.isSolid;
+
+  update();
 }
 
 

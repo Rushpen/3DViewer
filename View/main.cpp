@@ -7,7 +7,7 @@
 int main(int argc, char *argv[]) {
   QApplication app(argc, argv);
 
-  if (!SettingsManager::connectToDatabase()) {
+  if (!s21::SettingsManager::connectToDatabase()) {
     qCritical() << "Ошибка при подключении к базе данных.";
     return -1;
   }

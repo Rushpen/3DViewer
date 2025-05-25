@@ -9,6 +9,8 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
+namespace s21 {
+
 struct OpenGLSettings {
   QColor backgroundColor;
   QColor vertexColor;
@@ -19,19 +21,28 @@ struct OpenGLSettings {
   bool isSolid;
 };
 
+struct ModelData {
+  int id = -1;
+  QString name;
+  int verticesCount;
+  int edgesCount;
+};
+
 struct RecentFileInfo {
   QString filename;
-  QString modelName;
-  int vertices;
-  int edges;
   QDateTime openedAt;
 };
 
 class SettingsManager {
  public:
   static bool connectToDatabase();
-  static bool loadSettings(OpenGLSettings &settings);
-  static void saveSettings(const OpenGLSettings& settings);
-  static bool insertRecentFile(const RecentFileInfo& recentInfo);
+
+  static bool loadSettings(OpenGLSettings &settings, int modelId);
+  static void saveSettings(const OpenGLSettings& settings, int modelId);
+
+  static int saveOrFindModel(const ModelData& model);
+
+  static bool insertRecentFile(const RecentFileInfo& recentInfo, const ModelData& model);
   static QVector<RecentFileInfo> loadRecentFiles();
 };
+}

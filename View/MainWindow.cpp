@@ -22,10 +22,17 @@ MainWindow::MainWindow(QWidget* parent) : QWidget(parent) {
           &MainWindow::changeVertixesSettings);
   connect(RightPanel, &UIControl::projectionChanged, this,
           &MainWindow::changeSceneProjection);
+  connect(menuBarWidget, &MenuBarWidget::modelIdChanged,
+        this, &MainWindow::onModelIdChanged);
 }
 
 MainWindow::~MainWindow() {
   delete controller;
+}
+
+void MainWindow::onModelIdChanged(int modelId) {
+  getSceneWidget()->getOpenGLWidget()->setModelId(modelId);
+  getSceneWidget()->getOpenGLWidget()->loadSettings();
 }
 
 void MainWindow::updateScene(const std::vector<S21Matrix> points,
@@ -138,7 +145,7 @@ void MainWindow::unlockMenus() {
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {
-  SettingsManager::saveSettings(getSceneWidget()->getOpenGLWidget()->getSettings());
+  SettingsManager::saveSettings(getSceneWidget()->getOpenGLWidget()->getSettings(), getSceneWidget()->getOpenGLWidget()->getModelId());
   event->accept();
 }
 }  // namespace s21

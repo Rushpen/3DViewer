@@ -36,7 +36,8 @@ class MenuBarWidget : public QWidget {
 
  signals:
   void fileLoaded(const std::vector<S21Matrix> &points,
-                  const std::set<segment> &faces);
+                  const std::set<segment> &faces, const int &modelId);
+  void modelIdChanged(int modelId);
   void edgesColorChanged(const QColor &color);
   void vertixesColorChanged(const QColor &color);
   void backgroundColorChanged(const QColor &color);
@@ -80,8 +81,6 @@ class MenuBarWidget : public QWidget {
   void setupEdgesConnections();
   void setupVertixesConnections();
   void openFileMenu();
-
-  void onSetScreenshotSizeClicked();
 
   void updateRecentFiles(const QString &file);
   void rebuildRecentMenu();

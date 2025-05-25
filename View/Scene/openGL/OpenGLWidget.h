@@ -23,6 +23,7 @@ class OpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
 
  public:
   OpenGLWidget(QWidget* parent = nullptr);
+  void setToDefaults();
   void setPoints(const std::vector<S21Matrix>& points);
   void setFaces(const std::set<segment>& faces);
   void setBackgroundColor(const QColor& color);
@@ -32,6 +33,14 @@ class OpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   void setEdgeColor(const QColor& color);
   void setEdgeSettings(const int& width, const bool& type);
   void changeProjection(bool useOrtho);
+
+  void setModelId(int id) {
+    if (modelId == id) return;
+    modelId = id;
+    loadSettings();
+  }
+
+  int getModelId() const { return modelId; }
 
   OpenGLSettings getSettings() const;
   void loadSettings();
@@ -59,6 +68,7 @@ class OpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   bool isSolid;
   int typePoint;
   bool useOrtho;
+  int modelId = -1;
 
   void wheelEvent(QWheelEvent* event) override;
   void drawDashedLine3D(float x1, float y1, float z1, float x2, float y2, float z2, int edgeWidth);
