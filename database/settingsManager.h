@@ -19,6 +19,12 @@ struct OpenGLSettings {
   QColor edgeColor;
   int edgeWidth;
   bool isSolid;
+
+  float cameraRadius = 1.0f;
+  float cameraAngleX = 0.0f;
+  float cameraAngleY = 0.0f;
+
+  std::vector<float> orthoParams = { -1.0f, 1.0f, -1.0f, 1.0f, -10.0f, 10.0f };
 };
 
 struct ModelData {
@@ -36,6 +42,9 @@ struct RecentFileInfo {
 class SettingsManager {
  public:
   static bool connectToDatabase();
+
+  static QString serializeOrthoParams(const std::vector<float>& params);
+  static std::vector<float> deserializeOrthoParams(const QString& str);
 
   static bool loadSettings(OpenGLSettings &settings, int modelId);
   static void saveSettings(const OpenGLSettings& settings, int modelId);

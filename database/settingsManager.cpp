@@ -35,6 +35,13 @@ bool SettingsManager::connectToDatabase() {
     edge_color TEXT,
     edge_width INTEGER,
     is_solid BOOLEAN,
+
+    camera_radius NUMERIC(10,2),
+    camera_angle_x NUMERIC(10,2),
+    camera_angle_y NUMERIC(10,2),
+
+    ortho_params TEXT,
+
     model_id INTEGER NOT NULL UNIQUE REFERENCES model(id) ON DELETE CASCADE
   )
   )");
@@ -51,6 +58,25 @@ bool SettingsManager::connectToDatabase() {
   return ok1 && ok2 && ok3;
 }
 
+QString SettingsManager::serializeOrthoParams(const std::vector<float>& params) {
+  QStringList list;
+  for (float val : params)
+      list << QString::number(val, 'f', 2);
+  return list.join(',');
+}
+
+std::vector<float> SettingsManager::deserializeOrthoParams(const QString& str) {
+  std::vector<float> result;
+  for (const QString& val : str.split(',')) {
+    bool ok = false;
+    float f = val.toFloat(&ok);
+    if (ok) {
+      result.push_back(f);
+    }
+  }
+  return result;
+}
+
 void SettingsManager::saveSettings(const OpenGLSettings& settings, int modelId) {
     QSqlDatabase db = QSqlDatabase::database(); 
     if (!db.isOpen()) return;
@@ -60,8 +86,11 @@ void SettingsManager::saveSettings(const OpenGLSettings& settings, int modelId) 
     query.prepare(R"(
         INSERT INTO scene_settings (
             background_color, vertex_color, vertex_size, vertex_type, 
-            edge_color, edge_width, is_solid, model_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            edge_color, edge_width, is_solid,
+            camera_radius, camera_angle_x, camera_angle_y,
+            ortho_params,
+            model_id
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT (model_id) DO UPDATE SET 
         background_color = EXCLUDED.background_color,
         vertex_color = EXCLUDED.vertex_color,
@@ -69,7 +98,11 @@ void SettingsManager::saveSettings(const OpenGLSettings& settings, int modelId) 
         vertex_type = EXCLUDED.vertex_type,
         edge_color = EXCLUDED.edge_color,
         edge_width = EXCLUDED.edge_width,
-        is_solid = EXCLUDED.is_solid
+        is_solid = EXCLUDED.is_solid,
+        camera_radius = EXCLUDED.camera_radius,
+        camera_angle_x = EXCLUDED.camera_angle_x,
+        camera_angle_y = EXCLUDED.camera_angle_y,
+        ortho_params = EXCLUDED.ortho_params
     )");
     
     query.addBindValue(settings.backgroundColor.name());
@@ -79,6 +112,12 @@ void SettingsManager::saveSettings(const OpenGLSettings& settings, int modelId) 
     query.addBindValue(settings.edgeColor.name());
     query.addBindValue(settings.edgeWidth);
     query.addBindValue(settings.isSolid);
+
+    query.addBindValue(settings.cameraRadius);
+    query.addBindValue(settings.cameraAngleX);
+    query.addBindValue(settings.cameraAngleY);
+    query.addBindValue(serializeOrthoParams(settings.orthoParams));
+
     query.addBindValue(modelId);
 
     if (!query.exec()) {
@@ -93,7 +132,9 @@ bool SettingsManager::loadSettings(OpenGLSettings &settings, int modelId) {
 
   query.prepare(R"(
     SELECT background_color, vertex_color, vertex_size, vertex_type,
-           edge_color, edge_width, is_solid
+           edge_color, edge_width, is_solid,
+           camera_radius, camera_angle_x, camera_angle_y,
+           ortho_params
     FROM scene_settings
     WHERE model_id = ?
     LIMIT 1
@@ -114,6 +155,13 @@ bool SettingsManager::loadSettings(OpenGLSettings &settings, int modelId) {
   settings.edgeColor = QColor(query.value(4).toString());
   settings.edgeWidth = query.value(5).toInt();
   settings.isSolid = query.value(6).toBool();
+
+  settings.cameraRadius = query.value(7).toFloat();
+  settings.cameraAngleX = query.value(8).toFloat();
+  settings.cameraAngleY = query.value(9).toFloat();
+
+  QString orthoStr = query.value(10).toString();
+  settings.orthoParams = deserializeOrthoParams(orthoStr);
 
   return true;
 }

@@ -244,8 +244,10 @@ void OpenGLWidget::mouseMoveEvent(QMouseEvent* event) {
 }
 
 void OpenGLWidget::resizeProjection(int direction, bool useOrtho) {
-  float scaleFactor = 0.1f;
+  float scaleFactor = std::clamp(0.1f * cameraRadius, 0.005f, 2.0f);
   if (useOrtho) {
+    float orthoSpan = orthoParams[1] - orthoParams[0];
+    scaleFactor = std::clamp(0.02f * orthoSpan, 0.005f, 3.0f);
     if (direction > 0) {
       orthoParams[0] += scaleFactor;
       orthoParams[1] -= scaleFactor;
@@ -264,6 +266,7 @@ void OpenGLWidget::resizeProjection(int direction, bool useOrtho) {
     } else if (direction < 0) {
       cameraRadius += scaleFactor;
     }
+    cameraRadius = std::max(cameraRadius, 0.1f);
     setPerspectiveProjection();
   }
 }
@@ -277,7 +280,9 @@ void OpenGLWidget::wheelEvent(QWheelEvent* event) {
 OpenGLSettings OpenGLWidget::getSettings() const {
   return {
     backgroundColor, vertixColor, pointSize,
-    typePoint, edgeColor, edgeWidth, isSolid
+    typePoint, edgeColor, edgeWidth, isSolid,
+    cameraRadius, angleX, angleY,
+    orthoParams
   };
 }
 
@@ -295,6 +300,11 @@ void OpenGLWidget::loadSettings() {
   edgeColor = settings.edgeColor;
   edgeWidth = settings.edgeWidth;
   isSolid = settings.isSolid;
+
+  cameraRadius = settings.cameraRadius;
+  angleX = settings.cameraAngleX;
+  angleY = settings.cameraAngleY;
+  orthoParams = settings.orthoParams;
 
   update();
 }
