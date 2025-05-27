@@ -12,6 +12,7 @@ void MenuBarWidget::setupMenu() {
   menuBar = new QMenuBar(this);
   MainMenu = new QMenu("File", this);
   RecordMenu = new QMenu("Screen/Gif", this);
+  Print3DMenu = new QMenu("Print 3D");
   PreferencesMenu = new QMenu("Edit", this);
 
   RecentFilesMenu = new QMenu("Recent Files", this);
@@ -30,7 +31,10 @@ void MenuBarWidget::setupMenu() {
   exportFileMenu = new QMenu("Export to");
   MainMenu->addMenu(exportFileMenu);
   exportOBJAction = exportFileMenu->addAction(".obj");
+  exportOBJAction->setIcon(iconOBJ);
   exportSTLAction = exportFileMenu->addAction(".stl");
+  exportSTLAction->setIcon(iconSTL);
+
   exitAction = MainMenu->addAction("Close");
 
   colorBackgroundAction = PreferencesMenu->addAction("Background");
@@ -47,9 +51,14 @@ void MenuBarWidget::setupMenu() {
   gifScreenshotAction->setDefaultWidget(gifScreenshotWidget);
   RecordMenu->addAction(gifScreenshotAction);
 
+  openCuraAction = Print3DMenu->addAction("UltiMaker Cura");
+  openCuraAction->setIcon(iconPrinter);
+  exitAction = Print3DMenu->addAction("Close");
+
   menuBar->addMenu(MainMenu);
   menuBar->addMenu(PreferencesMenu);
   menuBar->addMenu(RecordMenu);
+  menuBar->addMenu(Print3DMenu);
 }
 
 void MenuBarWidget::openFileMenu() {
@@ -121,6 +130,7 @@ void MenuBarWidget::setupConnections() {
           &MenuBarWidget::openFileMenu);
   connect(exportOBJAction, &QAction::triggered, this, &MenuBarWidget::exportModelTo);
   connect(exportSTLAction, &QAction::triggered, this, &MenuBarWidget::exportModelTo);
+  connect(openCuraAction, &QAction::triggered, this, &MenuBarWidget::sendToPrinter);
   setupSettingsConnections();
   setupBackgroundConnection();
 }
@@ -197,13 +207,13 @@ void MenuBarWidget::updateRecentFiles(const QString &file) {
 
 void MenuBarWidget::rebuildRecentMenu() {
   RecentFilesMenu->clear();
+
   for (const QString &file : recentFiles) {
     QFileInfo fileInfo(file);
     QString shortName = fileInfo.fileName();
     QString baseName = fileInfo.completeBaseName();
 
     QAction *action = new QAction(shortName, this);
-    QFont font = action->font();
     action->setFont(QFont("Arial", 12));
     action->setData(file);
 
@@ -213,18 +223,12 @@ void MenuBarWidget::rebuildRecentMenu() {
 
     connect(action, &QAction::triggered, this, [this, action]() {
       QString fullPath = action->data().toString();
-      controller->start(fullPath.toStdString());
-      std::vector<S21Matrix> points = controller->get_point();
-      std::set<segment> faces = controller->get_face();
 
-      ModelData model;
-      model.name = QFileInfo(fullPath).completeBaseName();
-      model.verticesCount = points.size();
-      model.edgesCount = faces.size();
+      QString inputPath;
+      if (!prepareInputFile(fullPath, inputPath)) return;
 
-      int modelId = SettingsManager::saveOrFindModel(model);
-      emit modelIdChanged(modelId);
-      emit fileLoaded(points, faces, modelId);
+      currentFilePath = inputPath;
+      processModel(inputPath, fullPath);
     });
     RecentFilesMenu->addAction(action);
   }
@@ -260,10 +264,73 @@ void MenuBarWidget::exportModelTo() {
   }
 
   if (ModelIO::exportModel(currentFilePath, format, fileName)) {
-    QMessageBox::information(this, "Export", "Successfully exported to " + fileName);
+    QMessageBox::information(this, "Export", "Успешно экспортирован: " + fileName);
   } else {
-    QMessageBox::warning(this, "Export Error", "Failed to export to " + format.toUpper());
+    QMessageBox::warning(this, "Export Error", "Ошибка экспорта: " + format.toUpper());
   }
 }
+
+QString MenuBarWidget::prepareSTLFile(const QString &srcPath) {
+  QString printFolder = QCoreApplication::applicationDirPath() + "/../ForPrint/";
+  QDir().mkpath(printFolder);
+
+  QFileInfo fi(srcPath);
+  QString ext = fi.suffix().toLower();
+  QString stlPath;
+
+  if (ext == "stl") {
+    stlPath = printFolder + "/" + fi.fileName();
+    if (!QFile::copy(srcPath, stlPath)) {
+      QFile::remove(stlPath);
+      if (!QFile::copy(srcPath, stlPath)) {
+        QMessageBox::warning(this, "Ошибка", "Не удалось скопировать STL в папку печати.");
+        return "";
+      }
+    }
+  } else {
+    stlPath = printFolder + "/" + fi.completeBaseName() + ".stl";
+    if (!ModelIO::exportModel(srcPath, "stl", stlPath)) {
+      QMessageBox::warning(this, "Ошибка", "Не удалось конвертировать модель в STL.");
+      return "";
+    }
+  }
+  return stlPath;
+}
+
+bool MenuBarWidget::lauchPrinterApp(const QString &winpath) {
+  QString curaPath = R"(C:\Program Files\UltiMaker Cura 5.10.0\UltiMaker-Cura.exe)";
+  QString cmd = "powershell.exe";
+  QStringList args = {
+      "-Command",
+      QString("Start-Process -FilePath \"%1\" -ArgumentList '\"%2\"'")
+          .arg(curaPath, winpath)
+  };
+  return QProcess::startDetached(cmd, args);
+}
+
+void MenuBarWidget::sendToPrinter() {
+  if (currentFilePath.isEmpty()) {
+      QMessageBox::warning(this, "Ошибка", "Файл не выбран для печати.");
+      return;
+  }
+
+  QString stlFilePath = prepareSTLFile(currentFilePath);
+  if (stlFilePath.isEmpty()) { return; }
+
+  QProcess pathConv;
+  pathConv.start("wslpath", QStringList() << "-w" << stlFilePath);
+  pathConv.waitForFinished();
+  QString winPath = QString::fromLocal8Bit(pathConv.readAllStandardOutput()).trimmed();
+  if (winPath.isEmpty()) {
+      QMessageBox::warning(this, "Ошибка", "Не удалось преобразовать путь STL для Cura.");
+      return;
+  }
+
+  if (!lauchPrinterApp(winPath)) {
+      QMessageBox::warning(this, "Ошибка", "Не удалось запустить Cura.");
+      return;
+  }
+}
+
 
 }  // namespace s21

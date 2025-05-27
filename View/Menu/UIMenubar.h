@@ -14,6 +14,7 @@
 #include <QWidget>
 #include <QWidgetAction>
 #include <QSettings>
+#include <QProcess>
 
 #include "../3DViewer_back/mc/controller.h"
 #include "../Record/Screen.h"
@@ -47,6 +48,7 @@ class MenuBarWidget : public QWidget {
 
  private slots:
   void exportModelTo();
+  void sendToPrinter();
 
  private:
   QMenuBar *menuBar;
@@ -75,6 +77,9 @@ class MenuBarWidget : public QWidget {
 
   QWidgetAction *gifScreenshotAction;
 
+  QMenu *Print3DMenu;
+  QAction *openCuraAction;
+
   QMenu *RecentFilesMenu;
   QStringList recentFiles;
   const int maxRecentFiles = 5;
@@ -98,6 +103,9 @@ class MenuBarWidget : public QWidget {
   void rebuildRecentMenu();
   void loadRecentFilesFromSettings();
 
+  QString prepareSTLFile(const QString &srcPath);
+  bool lauchPrinterApp(const QString &winpath);
+
   const QString styleRecentFiles = R"(
     QMenu::item:selected {
       background-color: #3399FF; 
@@ -108,6 +116,13 @@ class MenuBarWidget : public QWidget {
       border: 1px solid gray;
     }
   )";
+
+  const QIcon iconPrinter = QIcon(QCoreApplication::applicationDirPath()
+                      +"/../View/Screenshots/icons/Logo_for_Cura_Software.png");
+  const QIcon iconOBJ = QIcon(QCoreApplication::applicationDirPath()
+                      +"/../View/Screenshots/icons/obj_icon.png");
+  const QIcon iconSTL = QIcon(QCoreApplication::applicationDirPath()
+                      +"/../View/Screenshots/icons/stl_icon.jpg");
 };
 
 }  // namespace s21

@@ -3,7 +3,7 @@ namespace s21 {
 
 MainWindow::MainWindow(QWidget* parent) : QWidget(parent) {
   controller = new Controller();
-  setWindowTitle("CPP4_3DViewer");
+  setWindowTitle("3DViewer");
   setupUI();
 
   connect(menuBarWidget, &MenuBarWidget::fileLoaded, this,
