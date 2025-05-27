@@ -7,7 +7,7 @@ UIScene::UIScene(QHBoxLayout* mainLayout, QWidget* parent) : QWidget(parent) {
 
 void UIScene::setupScene(QHBoxLayout* mainLayout) {
   openglWidget = new OpenGLWidget();
-  openglWidget->setMinimumSize(400, 400);
+  openglWidget->setMinimumSize(500, 500);
   mainLayout->addWidget(openglWidget);
 }
 }  // namespace s21

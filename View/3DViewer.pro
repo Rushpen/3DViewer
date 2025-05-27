@@ -15,6 +15,7 @@ SOURCES += \
     Record/GifScreenshotDialog.cpp \
     ../3DViewer_back/back/*.cpp \
     ../3DViewer_back/mc/*.cpp \
+    ../3DViewer_back/ModelIO/*.cpp \
     ../matrix/s21_matrix_oop.cpp \
     ../database/settingsManager.cpp
 
@@ -30,10 +31,12 @@ HEADERS += \
     Record/GifScreenshotDialog.h \
     ../3DViewer_back/back/*.h \
     ../3DViewer_back/mc/*.h \
+    ../3DViewer_back/ModelIO/*.cpp \
     ../matrix/s21_matrix_oop.h \
     ../database/settingsManager.h \
 
-LIBS += -lGLU -lGL
+INCLUDEPATH += /usr/include/assimp
+LIBS += -lGLU -lGL -lassimp
 
 include(Record/QtGifImageLib/src/gifimage/qtgifimage.pri)
 

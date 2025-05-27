@@ -6,7 +6,7 @@ UIControl::UIControl(QGridLayout* layout, QWidget* parent) : QWidget(parent) {
 
 void UIControl::setupRightPanel(QGridLayout* rightLayout, QWidget* parent) {
   int col = 0;
-  addEntryAndSlider(rightLayout, "Coordinates:", 0, col, parent);
+  addEntryAndSlider(rightLayout, "Move:", 0, col, parent);
   addEntryAndSlider(rightLayout, "Rotate:", 1, col, parent);
   addEntryAndSlider(rightLayout, "Scale:", 2, col, parent);
 
@@ -46,7 +46,7 @@ void UIControl::setupConnection(QSlider* slider, QLineEdit* entry, bool emitOnRe
 void UIControl::addEntryAndSlider(QGridLayout* layout, const QString& labelText,
                                   int row, int& col, QWidget* parent) {
   QLabel* label = new QLabel(labelText, parent);
-  label->setFixedWidth(90);
+  label->setFixedWidth(40);
   label->setFixedHeight(20);
   layout->addWidget(label, row, col);
 
@@ -61,7 +61,7 @@ void UIControl::addEntryAndSlider(QGridLayout* layout, const QString& labelText,
 
     QLineEdit* entry = new QLineEdit(parent);
     entry->setPlaceholderText("0");
-    entry->setFixedWidth(50);
+    entry->setFixedWidth(30);
     layout->addWidget(entry, row, col + 2 + i * 2);
 
     bool emitOnRelease = (row == 2);

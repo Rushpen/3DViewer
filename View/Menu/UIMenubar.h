@@ -18,6 +18,7 @@
 #include "../3DViewer_back/mc/controller.h"
 #include "../Record/Screen.h"
 #include "../../database/settingsManager.h"
+#include "../3DViewer_back/ModelIO/ModelIO.h"
 #include "UIMyDialog.h"
 
 namespace s21 {
@@ -44,6 +45,9 @@ class MenuBarWidget : public QWidget {
   void vertixesSettingsChanged(const int &size, const int &typePoint);
   void edgesSettingsChanged(const int &width, const bool &isSolid);
 
+ private slots:
+  void exportModelTo();
+
  private:
   QMenuBar *menuBar;
   QMenu *MainMenu;
@@ -51,10 +55,15 @@ class MenuBarWidget : public QWidget {
   QMenu *RecordMenu;
 
   QString fileName;
+  QString currentFilePath;
 
   QMenu *EdgesMenu;
   QAction *EdgesColorAction;
   QAction *EdgesTypeAction;
+
+  QMenu *exportFileMenu;
+  QAction *exportOBJAction;
+  QAction *exportSTLAction;
 
   QMenu *VertixesMenu;
   QAction *VertixesColorAction;
@@ -81,6 +90,9 @@ class MenuBarWidget : public QWidget {
   void setupEdgesConnections();
   void setupVertixesConnections();
   void openFileMenu();
+
+  bool prepareInputFile(const QString& originalFilePath, QString& outInputPath);
+  void processModel(const QString& inputPath, const QString& originalFilePath);
 
   void updateRecentFiles(const QString &file);
   void rebuildRecentMenu();
