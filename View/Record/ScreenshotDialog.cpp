@@ -3,7 +3,7 @@
 namespace s21 {
 ScreenshotDialog::ScreenshotDialog(QWidget* parent)
     : QDialog(parent) {
-  setWindowTitle("Настройки скриншота");
+  setWindowTitle("Parameters screenshot");
   layout = new QVBoxLayout(this);
   widthBox_ = new QSpinBox(this);
   heightBox_ = new QSpinBox(this);
@@ -13,22 +13,22 @@ ScreenshotDialog::ScreenshotDialog(QWidget* parent)
   widthBox_->setValue(400);
   heightBox_->setValue(400);
 
-  QLabel* widthLabel = new QLabel("Ширина (px): ", this);
+  QLabel* widthLabel = new QLabel("Width (px): ", this);
   widthLabel->setAlignment(Qt::AlignHCenter);
   layout->addWidget(widthLabel);
   layout->addWidget(widthBox_);
 
-  QLabel* heightLabel = new QLabel("Высота (px): ", this);
+  QLabel* heightLabel = new QLabel("Height (px): ", this);
   heightLabel->setAlignment(Qt::AlignHCenter);
   layout->addWidget(heightLabel);
   layout->addWidget(heightBox_);
 
-  fullscreenCheckBox_ = new QCheckBox("Всё окно", this);
+  fullscreenCheckBox_ = new QCheckBox("Full window", this);
   layout->addWidget(fullscreenCheckBox_, 0, Qt::AlignHCenter);
 
   pathEdit_ = new QLineEdit(this);
   pathEdit_->setText("View/Screenshots/");
-  browseButton_ = new QPushButton("Обзор...", this);
+  browseButton_ = new QPushButton("Browse...", this);
 
   QHBoxLayout* pathLayout = new QHBoxLayout;
   pathLayout->addWidget(pathEdit_);

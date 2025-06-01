@@ -66,6 +66,9 @@ class MenuBarWidget : public QWidget {
   QMenu *exportFileMenu;
   QAction *exportOBJAction;
   QAction *exportSTLAction;
+  QAction *exportPLYAction;
+  QAction *export3DSAction;
+  QAction *exportDAEAction;
 
   QMenu *VertixesMenu;
   QAction *VertixesColorAction;
@@ -89,6 +92,7 @@ class MenuBarWidget : public QWidget {
   GifScreenshotWidget *gifScreenshotWidget;
 
   void setupMenu();
+  void setupExportFilesConnections();
   void setupConnections();
   void setupBackgroundConnection();
   void setupSettingsConnections();
@@ -118,11 +122,17 @@ class MenuBarWidget : public QWidget {
   )";
 
   const QIcon iconPrinter = QIcon(QCoreApplication::applicationDirPath()
-                      +"/../View/Screenshots/icons/Logo_for_Cura_Software.png");
+                      +"/../View/icons/Logo_for_Cura_Software.png");
   const QIcon iconOBJ = QIcon(QCoreApplication::applicationDirPath()
-                      +"/../View/Screenshots/icons/obj_icon.png");
+                      +"/../View/icons/obj_icon.png");
   const QIcon iconSTL = QIcon(QCoreApplication::applicationDirPath()
-                      +"/../View/Screenshots/icons/stl_icon.jpg");
+                      +"/../View/icons/stl_icon.png");
+  const QIcon iconPLY = QIcon(QCoreApplication::applicationDirPath()
+                      +"/../View/icons/ply_icon.png");
+  const QIcon icon3DS = QIcon(QCoreApplication::applicationDirPath()
+                      +"/../View/icons/3ds_icon.png");
+  const QIcon iconDAE = QIcon(QCoreApplication::applicationDirPath()
+                      +"/../View/icons/dae_icon.png");
 };
 
 }  // namespace s21

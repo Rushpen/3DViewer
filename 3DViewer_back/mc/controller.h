@@ -2,6 +2,8 @@
 #define CONTROLLER_H
 
 #include "model.h"
+#include <chrono>
+#include <iostream>
 
 namespace s21 {
 

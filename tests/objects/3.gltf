@@ -1,0 +1,524 @@
+{
+    "asset": {
+        "version": "1.0",
+        "generator": "Open Asset Import Library (assimp v5.3.0)"
+    },
+    "accessors": {
+        "Tetrahedron_mesh_accessor": {
+            "bufferView": "Tetrahedron_mesh_view",
+            "byteOffset": 0,
+            "byteStride": 0,
+            "componentType": 5126,
+            "count": 12,
+            "type": "VEC3",
+            "max": [
+                0.5773502588272095,
+                0.5773502588272095,
+                0.5773502588272095
+            ],
+            "min": [
+                -0.5773502588272095,
+                -0.5773502588272095,
+                -0.5773502588272095
+            ]
+        },
+        "Tetrahedron_mesh_accessor_0": {
+            "bufferView": "Tetrahedron_mesh_view_0",
+            "byteOffset": 0,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 12,
+            "type": "SCALAR",
+            "max": [
+                11
+            ],
+            "min": [
+                0
+            ]
+        },
+        "Hexahedron_mesh_accessor": {
+            "bufferView": "Hexahedron_mesh_view",
+            "byteOffset": 0,
+            "byteStride": 0,
+            "componentType": 5126,
+            "count": 36,
+            "type": "VEC3",
+            "max": [
+                0.5773502588272095,
+                3.57735013961792,
+                0.5773502588272095
+            ],
+            "min": [
+                -0.5773502588272095,
+                2.42264986038208,
+                -0.5773502588272095
+            ]
+        },
+        "Hexahedron_mesh_accessor_0": {
+            "bufferView": "Hexahedron_mesh_view_0",
+            "byteOffset": 0,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 36,
+            "type": "SCALAR",
+            "max": [
+                35
+            ],
+            "min": [
+                0
+            ]
+        },
+        "Octahedron_mesh_accessor": {
+            "bufferView": "Octahedron_mesh_view",
+            "byteOffset": 0,
+            "byteStride": 0,
+            "componentType": 5126,
+            "count": 24,
+            "type": "VEC3",
+            "max": [
+                4.0,
+                1.0,
+                1.0
+            ],
+            "min": [
+                2.0,
+                -1.0,
+                -1.0
+            ]
+        },
+        "Octahedron_mesh_accessor_0": {
+            "bufferView": "Octahedron_mesh_view_0",
+            "byteOffset": 0,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 24,
+            "type": "SCALAR",
+            "max": [
+                23
+            ],
+            "min": [
+                0
+            ]
+        },
+        "Dodecahedron_mesh_accessor": {
+            "bufferView": "Dodecahedron_mesh_view",
+            "byteOffset": 0,
+            "byteStride": 0,
+            "componentType": 5126,
+            "count": 108,
+            "type": "VEC3",
+            "max": [
+                3.9341723918914797,
+                3.9341723918914797,
+                0.9341723322868347
+            ],
+            "min": [
+                2.0658276081085207,
+                2.0658276081085207,
+                -0.9341723322868347
+            ]
+        },
+        "Dodecahedron_mesh_accessor_0": {
+            "bufferView": "Dodecahedron_mesh_view_0",
+            "byteOffset": 0,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 108,
+            "type": "SCALAR",
+            "max": [
+                107
+            ],
+            "min": [
+                0
+            ]
+        },
+        "Icosahedron_mesh_accessor": {
+            "bufferView": "Icosahedron_mesh_view",
+            "byteOffset": 0,
+            "byteStride": 0,
+            "componentType": 5126,
+            "count": 60,
+            "type": "VEC3",
+            "max": [
+                6.850650787353516,
+                2.3506507873535158,
+                0.8506507873535156
+            ],
+            "min": [
+                5.149349212646484,
+                0.6493492126464844,
+                -0.8506507873535156
+            ]
+        },
+        "Icosahedron_mesh_accessor_0": {
+            "bufferView": "Icosahedron_mesh_view_0",
+            "byteOffset": 0,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 60,
+            "type": "SCALAR",
+            "max": [
+                59
+            ],
+            "min": [
+                0
+            ]
+        }
+    },
+    "buffers": {
+        "/mnt/c/Users/G_Rus/source/3DViewer/tests/objects/3": {
+            "byteLength": 3360,
+            "type": "arraybuffer",
+            "uri": "/mnt/c/Users/G_Rus/source/3DViewer/tests/objects/3.bin"
+        }
+    },
+    "bufferViews": {
+        "Tetrahedron_mesh_view": {
+            "buffer": "/mnt/c/Users/G_Rus/source/3DViewer/tests/objects/3",
+            "byteOffset": 0,
+            "byteLength": 144,
+            "target": 34962
+        },
+        "Tetrahedron_mesh_view_0": {
+            "buffer": "/mnt/c/Users/G_Rus/source/3DViewer/tests/objects/3",
+            "byteOffset": 144,
+            "byteLength": 24,
+            "target": 34963
+        },
+        "Hexahedron_mesh_view": {
+            "buffer": "/mnt/c/Users/G_Rus/source/3DViewer/tests/objects/3",
+            "byteOffset": 168,
+            "byteLength": 432,
+            "target": 34962
+        },
+        "Hexahedron_mesh_view_0": {
+            "buffer": "/mnt/c/Users/G_Rus/source/3DViewer/tests/objects/3",
+            "byteOffset": 600,
+            "byteLength": 72,
+            "target": 34963
+        },
+        "Octahedron_mesh_view": {
+            "buffer": "/mnt/c/Users/G_Rus/source/3DViewer/tests/objects/3",
+            "byteOffset": 672,
+            "byteLength": 288,
+            "target": 34962
+        },
+        "Octahedron_mesh_view_0": {
+            "buffer": "/mnt/c/Users/G_Rus/source/3DViewer/tests/objects/3",
+            "byteOffset": 960,
+            "byteLength": 48,
+            "target": 34963
+        },
+        "Dodecahedron_mesh_view": {
+            "buffer": "/mnt/c/Users/G_Rus/source/3DViewer/tests/objects/3",
+            "byteOffset": 1008,
+            "byteLength": 1296,
+            "target": 34962
+        },
+        "Dodecahedron_mesh_view_0": {
+            "buffer": "/mnt/c/Users/G_Rus/source/3DViewer/tests/objects/3",
+            "byteOffset": 2304,
+            "byteLength": 216,
+            "target": 34963
+        },
+        "Icosahedron_mesh_view": {
+            "buffer": "/mnt/c/Users/G_Rus/source/3DViewer/tests/objects/3",
+            "byteOffset": 2520,
+            "byteLength": 720,
+            "target": 34962
+        },
+        "Icosahedron_mesh_view_0": {
+            "buffer": "/mnt/c/Users/G_Rus/source/3DViewer/tests/objects/3",
+            "byteOffset": 3240,
+            "byteLength": 120,
+            "target": 34963
+        }
+    },
+    "materials": {
+        "DefaultMaterial": {
+            "values": {
+                "ambient": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "diffuse": [
+                    0.6000000238418579,
+                    0.6000000238418579,
+                    0.6000000238418579,
+                    1.0
+                ],
+                "specular": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "emission": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "shininess": 0.0
+            }
+        },
+        "Red": {
+            "values": {
+                "ambient": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "diffuse": [
+                    0.6000000238418579,
+                    0.6000000238418579,
+                    0.6000000238418579,
+                    1.0
+                ],
+                "specular": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "emission": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "shininess": 0.0
+            }
+        },
+        "Green": {
+            "values": {
+                "ambient": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "diffuse": [
+                    0.6000000238418579,
+                    0.6000000238418579,
+                    0.6000000238418579,
+                    1.0
+                ],
+                "specular": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "emission": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "shininess": 0.0
+            }
+        },
+        "Blue": {
+            "values": {
+                "ambient": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "diffuse": [
+                    0.6000000238418579,
+                    0.6000000238418579,
+                    0.6000000238418579,
+                    1.0
+                ],
+                "specular": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "emission": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "shininess": 0.0
+            }
+        },
+        "Orange": {
+            "values": {
+                "ambient": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "diffuse": [
+                    0.6000000238418579,
+                    0.6000000238418579,
+                    0.6000000238418579,
+                    1.0
+                ],
+                "specular": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "emission": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "shininess": 0.0
+            }
+        },
+        "Purple": {
+            "values": {
+                "ambient": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "diffuse": [
+                    0.6000000238418579,
+                    0.6000000238418579,
+                    0.6000000238418579,
+                    1.0
+                ],
+                "specular": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "emission": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "shininess": 0.0
+            }
+        }
+    },
+    "meshes": {
+        "Tetrahedron_mesh": {
+            "name": "",
+            "primitives": [
+                {
+                    "mode": 4,
+                    "material": "Red",
+                    "indices": "Tetrahedron_mesh_accessor_0",
+                    "attributes": {
+                        "POSITION": "Tetrahedron_mesh_accessor"
+                    }
+                }
+            ]
+        },
+        "Hexahedron_mesh": {
+            "name": "",
+            "primitives": [
+                {
+                    "mode": 4,
+                    "material": "Green",
+                    "indices": "Hexahedron_mesh_accessor_0",
+                    "attributes": {
+                        "POSITION": "Hexahedron_mesh_accessor"
+                    }
+                }
+            ]
+        },
+        "Octahedron_mesh": {
+            "name": "",
+            "primitives": [
+                {
+                    "mode": 4,
+                    "material": "Blue",
+                    "indices": "Octahedron_mesh_accessor_0",
+                    "attributes": {
+                        "POSITION": "Octahedron_mesh_accessor"
+                    }
+                }
+            ]
+        },
+        "Dodecahedron_mesh": {
+            "name": "",
+            "primitives": [
+                {
+                    "mode": 4,
+                    "material": "Orange",
+                    "indices": "Dodecahedron_mesh_accessor_0",
+                    "attributes": {
+                        "POSITION": "Dodecahedron_mesh_accessor"
+                    }
+                }
+            ]
+        },
+        "Icosahedron_mesh": {
+            "name": "",
+            "primitives": [
+                {
+                    "mode": 4,
+                    "material": "Purple",
+                    "indices": "Icosahedron_mesh_accessor_0",
+                    "attributes": {
+                        "POSITION": "Icosahedron_mesh_accessor"
+                    }
+                }
+            ]
+        }
+    },
+    "nodes": {
+        "solids.obj": {
+            "children": [
+                "Tetrahedron",
+                "Hexahedron",
+                "Octahedron",
+                "Dodecahedron",
+                "Icosahedron"
+            ]
+        },
+        "Tetrahedron": {
+            "meshes": [
+                "Tetrahedron_mesh"
+            ]
+        },
+        "Hexahedron": {
+            "meshes": [
+                "Hexahedron_mesh"
+            ]
+        },
+        "Octahedron": {
+            "meshes": [
+                "Octahedron_mesh"
+            ]
+        },
+        "Dodecahedron": {
+            "meshes": [
+                "Dodecahedron_mesh"
+            ]
+        },
+        "Icosahedron": {
+            "meshes": [
+                "Icosahedron_mesh"
+            ]
+        }
+    },
+    "scenes": {
+        "defaultScene": {
+            "nodes": [
+                "solids.obj"
+            ]
+        }
+    },
+    "scene": "defaultScene"
+}

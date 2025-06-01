@@ -23,14 +23,12 @@ class GifScreenshotWidget : public QWidget {
 friend class MainWindow;
  public:
   GifScreenshotWidget(QWidget *parent = nullptr);
-  void scheduleScreenshot(const QString& baseName);
 
  private:
   void openScreenshotDialog();
   void openGifScreenshotDialog();
 
   void takeScreenshot(const QSize &size, const QString &filePath, const bool isFull);
-  void takeIcon(const QString& baseName);
 
   void startRecordingGif(const QSize &size, const QString &filePath, const bool isFull);
   void takeGif();

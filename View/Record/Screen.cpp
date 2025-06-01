@@ -94,23 +94,4 @@ void GifScreenshotWidget::takeGif() {
   }
 }
 
-void GifScreenshotWidget::takeIcon(const QString& baseName) {
-  QDir dir("View/Screenshots/icons");
-  if (!dir.exists()) {
-    dir.mkpath(".");
-  }
-  QWidget *topWidget = QApplication::activeWindow();
-  if (!topWidget) return;
-
-  QPixmap screenshot = topWidget->grab(QRect(111, 131, 200, 200));
-  QString safeName = QFileInfo(baseName).completeBaseName();
-  QString filePath = dir.filePath(safeName + ".jpeg");
-  screenshot.save(filePath, "JPEG");
-}
-
-void GifScreenshotWidget::scheduleScreenshot(const QString& baseName) {
-  QTimer::singleShot(200, this, [this, baseName]() { takeIcon(baseName); });
-}
-
-
 }  // namespace s21

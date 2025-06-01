@@ -10,6 +10,7 @@
 #include <QOpenGLWidget>
 #include <QPoint>
 #include <QtCore>
+#include <QElapsedTimer>
 #include <set>
 #include <vector>
 #include <cmath>
@@ -24,8 +25,12 @@ class OpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
  public:
   OpenGLWidget(QWidget* parent = nullptr);
   void setToDefaults();
-  void setPoints(const std::vector<S21Matrix>& points);
+
+  void updatePoints(const std::vector<S21Matrix>& newPoints);
+
   void setFaces(const std::set<segment>& faces);
+  void updateLineVBO();
+
   void setBackgroundColor(const QColor& color);
 
   void setVertixColor(const QColor& color);
@@ -69,6 +74,16 @@ class OpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   int typePoint;
   bool useOrtho;
   int modelId = -1;
+
+  GLuint pointVBO = 0;
+  bool pointVBOInitialized = false;
+  GLuint lineVBO_ = 0;
+  std::vector<float> lineVertices_;
+
+  QElapsedTimer frameTimer_;
+  int totalFrameCount_ = 0;
+  int lastFrameCount_ = 0; 
+  qint64 lastTime_ = 0;  
 
   void wheelEvent(QWheelEvent* event) override;
   void drawDashedLine3D(float x1, float y1, float z1, float x2, float y2, float z2, int edgeWidth);

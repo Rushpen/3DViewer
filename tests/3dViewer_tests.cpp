@@ -7,18 +7,6 @@ void ViewerTest::SetUp() {
   controller_.start(test_file);
 }
 
-TEST_F(ViewerTest, LoadModelThroughController) {
-  auto points = controller_.get_point();
-  EXPECT_GT(points.size(), 0);
-}
-
-TEST_F(ViewerTest, ApplyControllerTransformMoveX) {
-  controller_.set_status(mv_X);
-  controller_.set_meaning(5.0);
-  controller_.transform();
-  EXPECT_NEAR(-0.113037 + 5.0, -0.113037 + 5.0, 1e-6);
-}
-
 TEST_F(ViewerTest, ApplyControllerTransformMoveY) {
   auto points = controller_.get_point();
   double initial_y = points[0](0, 1);
@@ -29,6 +17,37 @@ TEST_F(ViewerTest, ApplyControllerTransformMoveY) {
 
   points = controller_.get_point();
   EXPECT_NEAR(points[0](0, 1), initial_y + 5.0, 1e-6);
+}
+
+TEST_F(ViewerTest, ApplyControllerTransformRotateY) {
+  auto points = controller_.get_point();
+  double initial_x = points[0](0, 0);
+
+  controller_.set_status(rt_Y);
+  controller_.set_meaning(180.0);
+  controller_.transform();
+
+  points = controller_.get_point();
+  EXPECT_NEAR(points[0](0, 0), -1 * initial_x, 1e-6);
+}
+
+TEST_F(ViewerTest, ApplyControllerTransformScale1) {
+  auto points = controller_.get_point();
+  double initial_x = points[0](0, 0);
+
+  controller_.set_status(scal);
+  controller_.set_meaning(2);
+  controller_.transform();
+
+  points = controller_.get_point();
+  EXPECT_NEAR(points[0](0, 0), 2 * initial_x, 1e-6);
+}
+
+TEST_F(ViewerTest, ApplyControllerTransformMoveX) {
+  controller_.set_status(mv_X);
+  controller_.set_meaning(5.0);
+  controller_.transform();
+  EXPECT_NEAR(-0.113037 + 5.0, -0.113037 + 5.0, 1e-6);
 }
 
 TEST_F(ViewerTest, ApplyControllerTransformMoveZ) {
@@ -55,18 +74,6 @@ TEST_F(ViewerTest, ApplyControllerTransformRotateX1) {
   EXPECT_EQ(points[0](0, 0), initial_x);
 }
 
-TEST_F(ViewerTest, ApplyControllerTransformRotateY) {
-  auto points = controller_.get_point();
-  double initial_x = points[0](0, 0);
-
-  controller_.set_status(rt_Y);
-  controller_.set_meaning(180.0);
-  controller_.transform();
-
-  points = controller_.get_point();
-  EXPECT_NEAR(points[0](0, 0), -1 * initial_x, 1e-6);
-}
-
 TEST_F(ViewerTest, ApplyControllerTransformRotateZ) {
   auto points = controller_.get_point();
   double initial_x = points[0](0, 0);
@@ -77,18 +84,6 @@ TEST_F(ViewerTest, ApplyControllerTransformRotateZ) {
 
   points = controller_.get_point();
   EXPECT_NEAR(points[0](0, 0), -1 * initial_x, 1e-6);
-}
-
-TEST_F(ViewerTest, ApplyControllerTransformScale1) {
-  auto points = controller_.get_point();
-  double initial_x = points[0](0, 0);
-
-  controller_.set_status(scal);
-  controller_.set_meaning(2);
-  controller_.transform();
-
-  points = controller_.get_point();
-  EXPECT_NEAR(points[0](0, 0), 2 * initial_x, 1e-6);
 }
 
 TEST_F(ViewerTest, ApplyControllerTransformScale2) {
@@ -107,8 +102,12 @@ TEST_F(ViewerTest, ApplyControllerTransformScale2) {
   EXPECT_NEAR(points[0](0, 2), 2 * initial_z, 1e-6);
 }
 
+TEST_F(ViewerTest, LoadModelThroughController) {
+  auto points = controller_.get_point();
+  EXPECT_GT(points.size(), 0);
+}
+
 TEST_F(ViewerTest, ApplyControllerOther) {
-  controller_.print();
   std::set<segment> test_face = controller_.get_face();
   EXPECT_EQ(test_face, controller_.get_face());
   segment test_segment = *test_face.begin();

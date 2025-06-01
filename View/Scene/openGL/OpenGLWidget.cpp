@@ -58,6 +58,10 @@ void OpenGLWidget::initializeGL() {
   glClearColor(backgroundColor.redF(), backgroundColor.greenF(),
                backgroundColor.blueF(), 1.0f);
   loadSettings();
+  glGenBuffers(1, &lineVBO_);
+
+  frameTimer_.start();
+  lastTime_ = frameTimer_.elapsed();
 }
 
 void OpenGLWidget::resizeGL() { glViewport(0, 0, 400, 200); }
@@ -76,6 +80,19 @@ void OpenGLWidget::paintGL() {
     drawPoint();
     drawLine();
   };
+
+  totalFrameCount_++;
+  lastFrameCount_++;
+  qint64 currentTime = frameTimer_.elapsed();
+
+  if (currentTime - lastTime_ >= 1000) {
+    double averageFPS = (totalFrameCount_ * 1000.0) / currentTime;
+    qDebug() << "Текущий FPS:" << lastFrameCount_
+             << "Средний FPS:" << averageFPS;
+
+    lastFrameCount_ = 0;
+    lastTime_ = currentTime;
+  }
 }
 
 void OpenGLWidget::setProjection() {
@@ -102,11 +119,10 @@ void OpenGLWidget::changeProjection(bool useOrtho) {
   update();
 }
 
-void OpenGLWidget::setPoints(const std::vector<S21Matrix>& points) {
-  points_ = points;
+void OpenGLWidget::setFaces(const std::set<segment>& faces) {
+  faces_ = faces;
+  updateLineVBO();
 }
-
-void OpenGLWidget::setFaces(const std::set<segment>& faces) { faces_ = faces; }
 
 void OpenGLWidget::drawRoundPoint(int segments) {
   const float radius = pointSize / 100.0f;
@@ -129,20 +145,20 @@ void OpenGLWidget::drawRoundPoint(int segments) {
 }
 
 void OpenGLWidget::drawPoint() {
-  if (typePoint == 0) return;
+  if (!pointVBOInitialized) return;
 
-  glPointSize(pointSize);
-  glColor3f(vertixColor.redF(), vertixColor.greenF(), vertixColor.blueF());
-  
   if (typePoint == 1) {
-    glBegin(GL_POINTS);
-    for (const auto& point : points_) {
-      glVertex3f(point(0, 0), point(0, 1), point(0, 2));
-    }
-    glEnd();
-  } else {
-    const int segments = 20;
-    drawRoundPoint(segments);
+    glPointSize(pointSize);
+    glColor3f(vertixColor.redF(), vertixColor.greenF(), vertixColor.blueF());
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glBindBuffer(GL_ARRAY_BUFFER, pointVBO);
+    glVertexPointer(3, GL_FLOAT, 0, nullptr);
+    glDrawArrays(GL_POINTS, 0, points_.size());
+    glDisableClientState(GL_VERTEX_ARRAY);
+  }
+  else if(typePoint == 2) {
+    drawRoundPoint(16); 
   }
 }
 
@@ -182,31 +198,33 @@ void OpenGLWidget::drawDashedLine3D(float x1, float y1, float z1, float x2,
   glEnd();
 }
 
-
 void OpenGLWidget::drawLine() {
-  glLineWidth(edgeWidth);
-  glColor3f(edgeColor.redF(), edgeColor.greenF(), edgeColor.blueF());
+    if (lineVertices_.empty()) return;
 
-  for (const auto& face : faces_) {
-    size_t vertx1 = face.get_segment_first() - 1;
-    size_t vertx2 = face.get_segment_second() - 1;
+    glLineWidth(edgeWidth);
+    glColor3f(edgeColor.redF(), edgeColor.greenF(), edgeColor.blueF());
 
-    if (vertx1 < points_.size() && vertx2 < points_.size()) {
-      auto& p1 = points_[vertx1];
-      auto& p2 = points_[vertx2];
+    if (isSolid) {
+      glEnableClientState(GL_VERTEX_ARRAY);
 
-      if (isSolid) {
-        glBegin(GL_LINES);
-        glVertex3f(p1(0,0), p1(0,1), p1(0,2));
-        glVertex3f(p2(0,0), p2(0,1), p2(0,2));
-        glEnd();
-      } else {
-        drawDashedLine3D(p1(0,0), p1(0,1), p1(0,2),
-                         p2(0,0), p2(0,1), p2(0,2),
-                         edgeWidth);
-      }
+      glBindBuffer(GL_ARRAY_BUFFER, lineVBO_);
+      glBufferData(GL_ARRAY_BUFFER, sizeof(float) * lineVertices_.size(),
+                  lineVertices_.data(), GL_DYNAMIC_DRAW);
+      glVertexPointer(3, GL_FLOAT, 0, 0);
+
+      glDrawArrays(GL_LINES, 0, static_cast<GLsizei>(lineVertices_.size() / 3));
+
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+      glDisableClientState(GL_VERTEX_ARRAY);
+    } else {
+        for (size_t i = 0; i + 5 < lineVertices_.size(); i += 6) {
+              drawDashedLine3D(
+                  lineVertices_[i], lineVertices_[i + 1], lineVertices_[i + 2],
+                  lineVertices_[i + 3], lineVertices_[i + 4], lineVertices_[i + 5],
+                  edgeWidth
+              );
+          }
     }
-  }
 }
 
 
@@ -307,6 +325,49 @@ void OpenGLWidget::loadSettings() {
   orthoParams = settings.orthoParams;
 
   update();
+}
+
+void OpenGLWidget::updatePoints(const std::vector<S21Matrix>& newPoints) {
+  points_ = newPoints;
+
+  std::vector<float> vertexData;
+  vertexData.reserve(points_.size() * 3);
+
+  for (const auto& point : points_) {
+    vertexData.push_back(point(0, 0));
+    vertexData.push_back(point(0, 1));
+    vertexData.push_back(point(0, 2));
+  }
+
+  if (!pointVBOInitialized) {
+    glGenBuffers(1, &pointVBO);
+    pointVBOInitialized = true;
+  }
+
+  glBindBuffer(GL_ARRAY_BUFFER, pointVBO);
+  glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
+}
+
+void OpenGLWidget::updateLineVBO() {
+  lineVertices_.clear();
+
+  for (const auto& face : faces_) {
+    size_t i1 = face.get_segment_first() - 1;
+    size_t i2 = face.get_segment_second() - 1;
+
+    if (i1 < points_.size() && i2 < points_.size()) {
+      auto& p1 = points_[i1];
+      auto& p2 = points_[i2];
+
+      lineVertices_.push_back(p1(0, 0));
+      lineVertices_.push_back(p1(0, 1));
+      lineVertices_.push_back(p1(0, 2));
+
+      lineVertices_.push_back(p2(0, 0));
+      lineVertices_.push_back(p2(0, 1));
+      lineVertices_.push_back(p2(0, 2));
+    }
+  }
 }
 
 

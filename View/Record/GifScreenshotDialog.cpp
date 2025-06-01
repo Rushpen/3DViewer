@@ -3,7 +3,7 @@
 namespace s21 {
 
 GifScreenshotDialog::GifScreenshotDialog(QWidget* parent) : ScreenshotDialog(parent) {
-  setWindowTitle("Настройки GIF");
+  setWindowTitle("Parameters GIF");
   pathEdit_->setText("View/Gif/");
 }
 

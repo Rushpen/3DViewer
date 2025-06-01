@@ -34,6 +34,12 @@ void MenuBarWidget::setupMenu() {
   exportOBJAction->setIcon(iconOBJ);
   exportSTLAction = exportFileMenu->addAction(".stl");
   exportSTLAction->setIcon(iconSTL);
+  exportPLYAction = exportFileMenu->addAction(".ply");
+  exportPLYAction->setIcon(iconPLY);
+  export3DSAction = exportFileMenu->addAction(".3ds");
+  export3DSAction->setIcon(icon3DS);
+  exportDAEAction = exportFileMenu->addAction(".dae");
+  exportDAEAction->setIcon(iconDAE);
 
   exitAction = MainMenu->addAction("Close");
 
@@ -63,7 +69,7 @@ void MenuBarWidget::setupMenu() {
 
 void MenuBarWidget::openFileMenu() {
   QString fullFileName =
-      QFileDialog::getOpenFileName(this, "Open File", "", "3D Files (*.obj *.stl);;All Files (*.*)");
+      QFileDialog::getOpenFileName(this, "Open File", "", "3D Files (*.obj *.stl *.ply *.3ds *.dae);;All Files (*.*)");
 
   if (fullFileName.isEmpty()) return;
 
@@ -78,20 +84,21 @@ bool MenuBarWidget::prepareInputFile(const QString& originalFilePath, QString& o
     QFileInfo fileInfo(originalFilePath);
     QString suf = fileInfo.suffix().toLower();
 
-    if (suf == "obj") {
+    static const QSet<QString> supportedDirect = { "obj" };
+    static const QSet<QString> supportedViaConversion = { "stl", "ply", "3ds", "dae"};
+
+    if (supportedDirect.contains(suf)) {
         outInputPath = originalFilePath;
         return true;
-    }
-    else if (suf == "stl") {
+    } else if (supportedViaConversion.contains(suf)) {
         QString tempObjPath;
-        if (!ModelIO::convertStlToObj(originalFilePath, tempObjPath)) {
-            QMessageBox::warning(this, "Ошибка", "Не удалось конвертировать STL в OBJ");
+        if (!ModelIO::convertToObj(originalFilePath, tempObjPath)) {
+            QMessageBox::warning(this, "Ошибка", "Не удалось конвертировать " + suf.toUpper() + " в OBJ");
             return false;
         }
         outInputPath = tempObjPath;
         return true;
-    }
-    else {
+    } else {
         QMessageBox::warning(this, "Ошибка", "Формат не поддерживается: " + suf);
         return false;
     }
@@ -128,11 +135,18 @@ void MenuBarWidget::setupConnections() {
   connect(exitAction, &QAction::triggered, this, &QWidget::close);
   connect(openFileAction, &QAction::triggered, this,
           &MenuBarWidget::openFileMenu);
-  connect(exportOBJAction, &QAction::triggered, this, &MenuBarWidget::exportModelTo);
-  connect(exportSTLAction, &QAction::triggered, this, &MenuBarWidget::exportModelTo);
   connect(openCuraAction, &QAction::triggered, this, &MenuBarWidget::sendToPrinter);
   setupSettingsConnections();
   setupBackgroundConnection();
+  setupExportFilesConnections();
+}
+
+void MenuBarWidget::setupExportFilesConnections() {
+  connect(exportOBJAction, &QAction::triggered, this, &MenuBarWidget::exportModelTo);
+  connect(exportSTLAction, &QAction::triggered, this, &MenuBarWidget::exportModelTo);
+  connect(exportPLYAction, &QAction::triggered, this, &MenuBarWidget::exportModelTo);
+  connect(export3DSAction, &QAction::triggered, this, &MenuBarWidget::exportModelTo);
+  connect(exportDAEAction, &QAction::triggered, this, &MenuBarWidget::exportModelTo);
 }
 
 void MenuBarWidget::setupBackgroundConnection() {
@@ -208,18 +222,20 @@ void MenuBarWidget::updateRecentFiles(const QString &file) {
 void MenuBarWidget::rebuildRecentMenu() {
   RecentFilesMenu->clear();
 
+  QString baseIconPath = QCoreApplication::applicationDirPath()
+      + "/../View/icons/";
+
   for (const QString &file : recentFiles) {
     QFileInfo fileInfo(file);
     QString shortName = fileInfo.fileName();
-    QString baseName = fileInfo.completeBaseName();
+    QString extension = fileInfo.suffix().toLower();
 
     QAction *action = new QAction(shortName, this);
     action->setFont(QFont("Arial", 12));
     action->setData(file);
 
-    QString iconPath = QCoreApplication::applicationDirPath()
-                      +"/../View/Screenshots/icons/" + baseName + ".jpeg";
-    action->setIcon(QIcon(iconPath));
+    QString iconPath = baseIconPath + extension + "_icon.png";
+    action->setIcon(QIcon(iconPath)); 
 
     connect(action, &QAction::triggered, this, [this, action]() {
       QString fullPath = action->data().toString();
@@ -254,7 +270,17 @@ void MenuBarWidget::exportModelTo() {
   } else if (action == exportSTLAction) {
     format = "stl";
     filter = "STL Files (*.stl)";
-  } else { return; }
+  } else if (action == exportPLYAction) {
+    format = "ply";
+    filter = "PLY Files (*.ply)";
+  } else if (action == export3DSAction) {
+    format = "3ds";
+    filter = "3DS Files (*.3ds)";
+  } else if (action == exportDAEAction) {
+    format = "dae";
+    filter = "DAE Files (*.dae)";
+  }
+  else { return; }
 
   QString fileName = QFileDialog::getSaveFileName(this, "Export Model", "", filter);
   if (fileName.isEmpty()) return;

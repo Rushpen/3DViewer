@@ -30,6 +30,19 @@ desktop_clean:
 	rm -rf desk
 	make desktop
 
+run:
+	chmod 777 ./build/3DViewer
+	./build/3DViewer
+
+clean:
+	rm -rf *.o *.a build 3DViewer_back/*.o
+	rm -rf $(MATRIX_OBJ) $(BACKEND_OBJECT)
+	rm -rf desk
+	# rm -rf tests/gcov_report/ tests/tests tests/coverage_report.txt
+
+uninstall:
+	rm -rf build
+
 lib:
 	sudo apt install qt5-dev
 
@@ -42,10 +55,6 @@ libbackend.a: $(BACKEND_OBJECT)
 	ar rc libbackend.a $(BACKEND_OBJECT)
 	ranlib libbackend.a
 	rm -rf $(BACKEND_OBJECT)
-
-run:
-	chmod 777 ./build/3DViewer
-	./build/3DViewer
 
 dvi:
 	@xdg-open dvi/Report.md
@@ -83,19 +92,12 @@ gcov : clean libmatrix.a
 	gcovr -r . --txt -o ./tests/coverage_report.txt
 	rm tests/*.gcda tests/*.gcno
 
-	@xdg-open ./tests/gcov_report/index.html
+	@xdg-open ./tests/gcov_report/index.xml
 
 gcov_clean:
 	rm -rf tests/gcov_report/ tests/tests tests/coverage_report.txt
 
-clean:
-	rm -rf *.o *.a build 3DViewer_back/*.o
-	rm -rf $(MATRIX_OBJ) $(BACKEND_OBJECT)
-	rm -rf desk
-	# rm -rf tests/gcov_report/ tests/tests tests/coverage_report.txt
 
-uninstall:
-	rm -rf build
 
 clean_dist:
 	@cd ../ && rm -rf archive

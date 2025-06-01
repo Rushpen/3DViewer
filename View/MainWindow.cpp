@@ -37,12 +37,11 @@ void MainWindow::onModelIdChanged(int modelId) {
 
 void MainWindow::updateScene(const std::vector<S21Matrix> points,
                              const std::set<segment> faces) {
-  Scene->getOpenGLWidget()->setPoints(points);
+  Scene->getOpenGLWidget()->updatePoints(points);
   Scene->getOpenGLWidget()->setFaces(faces);
   Scene->getOpenGLWidget()->update();
   unlock();
   printVertixesAndEdgesNumbers();
-  menuBarWidget->getGifScreenshotWidget()->scheduleScreenshot(menuBarWidget->getFilename());
 }
 
 void MainWindow::setupUI() {
@@ -80,7 +79,7 @@ void MainWindow::updateStates(QLineEdit* entry) {
       break;
     }
   }
-  Scene->getOpenGLWidget()->setPoints(controller->get_point());
+  Scene->getOpenGLWidget()->updatePoints(controller->get_point());
   Scene->getOpenGLWidget()->setFaces(controller->get_face());
   Scene->getOpenGLWidget()->update();
 }
